@@ -1,26 +1,55 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Admin from "./components/admin";
+import Login from "./components/login";
+import { serverAuthorize, checkLogin } from "./util";
 
-function App() {
+import "./App.css";
+
+export default function App() {
+  const [username, userVal] = useState("");
+  const [password, secretVal] = useState("");
+  const [admin, authorize] = useState(null);
+  const [showStore, setShow] = useState(null);
+
+  useEffect(() => {
+    if (admin === true) return setShow(true);
+  }, [admin]);
+
+  //checks to see if valid token exists
+  useEffect(() => {
+    checkLogin(authorize);
+  }, []);
+
+  const validateCredentials = (e) => {
+    e.preventDefault();
+    fetch(process.env.REACT_APP_ADMIN_LOGIN, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      },
+      body: new URLSearchParams({
+        admin: username,
+        password: password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => serverAuthorize(authorize, data));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {showStore === null ? (
+        <Login
+          username={username}
+          password={password}
+          validateCredentials={validateCredentials}
+          userVal={userVal}
+          secretVal={secretVal}
+        />
+      ) : (
+        <Admin />
+      )}
     </div>
   );
 }
-
-export default App;
