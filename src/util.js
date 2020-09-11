@@ -19,19 +19,26 @@ export const serverAuthorize = (authorize, serverResponse) => {
   let expiry = new Date(
     new Date().getTime() + 60 * 60 * 24 * 1000
   ).toUTCString();
-  console.log(expiry);
   if (serverResponse.admin === true) {
     authorize(true);
-    document.cookie = "admin =" + serverResponse.admin + "; expires =" + expiry;
-    document.cookie = "token =" + serverResponse.token + ";expires =" + expiry;
+    document.cookie =
+      "admin =" +
+      encodeURIComponent(serverResponse.admin) +
+      "; expires =" +
+      expiry;
+    document.cookie =
+      "token =" +
+      encodeURIComponent(serverResponse.token) +
+      ";expires =" +
+      expiry;
   }
   if (serverResponse.admin === false) {
     authorize(null);
   }
 };
 
-export const checkLogin = (authorize, setAccessToken) => {
-  let token = localStorage.getItem("token");
+export const checkCookie = (authorize, setAccessToken) => {
+  let token = getCookie("token");
   if (!token) {
     return authorize(null);
   }
@@ -45,13 +52,40 @@ export const checkLogin = (authorize, setAccessToken) => {
     .then((res) => res.json())
     .then((data) => {
       if (data.admin === false && data.edit === false) {
-        console.log("token not validated");
-        authorize(null);
+        document.cookie = "token=;max-age=0";
+        document.cookie = "admin=;max-age=0";
+        return authorize(null);
       }
       if (data.admin === "admin") {
         authorize(true);
         setAccessToken(token);
-        console.log("token validated");
       }
     });
 };
+
+export function logout(authorize, setAccessToken) {
+  document.cookie = "token=;max-age=0";
+  document.cookie = "admin=;max-age=0";
+  authorize(null);
+  setAccessToken(null);
+}
+
+function getCookie(name) {
+  // Split cookie string and get all individual name=value pairs in an array
+  var cookieArr = document.cookie.split(";");
+
+  // Loop through the array elements
+  for (var i = 0; i < cookieArr.length; i++) {
+    var cookiePair = cookieArr[i].split("=");
+
+    /* Removing whitespace at the beginning of the cookie name
+      and compare it with the given string */
+    if (name === cookiePair[0].trim()) {
+      // Decode the cookie value and return
+      return decodeURIComponent(cookiePair[1]);
+    }
+  }
+
+  // Return null if not found
+  return null;
+}

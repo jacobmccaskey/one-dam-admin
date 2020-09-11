@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Admin from "./components/admin";
 import Login from "./components/login";
-import { serverAuthorize, checkLogin } from "./util";
+import { serverAuthorize, checkCookie } from "./util";
 // import validator from "validator";
 
 import "./App.css";
@@ -10,7 +10,6 @@ export default function App() {
   const [username, userVal] = useState("");
   const [password, secretVal] = useState("");
   const [admin, authorize] = useState(null);
-  const [showStore, setShow] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
 
   const validateCredentials = (e) => {
@@ -37,19 +36,13 @@ export default function App() {
   //checks to see if valid token exists
   useEffect(() => {
     if (admin === null) {
-      checkLogin(authorize, setAccessToken);
-    }
-  }, [admin]);
-
-  useEffect(() => {
-    if (admin === true) {
-      setShow(true);
+      checkCookie(authorize, setAccessToken);
     }
   }, [admin]);
 
   return (
     <div>
-      {showStore === null ? (
+      {admin === null ? (
         <Login
           username={username}
           password={password}
@@ -58,7 +51,12 @@ export default function App() {
           secretVal={secretVal}
         />
       ) : (
-        <Admin admin={admin} accessToken={accessToken} />
+        <Admin
+          admin={admin}
+          accessToken={accessToken}
+          authorize={authorize}
+          setAccessToken={setAccessToken}
+        />
       )}
     </div>
   );

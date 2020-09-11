@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { storage } from "./firebase";
 import { addToStore } from "../util";
 import Button from "@material-ui/core/Button";
+import { logout } from "../util";
 import Container from "@material-ui/core/Container";
 
 class Admin extends Component {
@@ -23,9 +24,11 @@ class Admin extends Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        this.setState({
-          inventory: data,
-        });
+        data.admin === false
+          ? this.props.authorize(null)
+          : this.setState({
+              inventory: data,
+            });
       })
       .catch((err) => console.error(err));
   };
@@ -96,10 +99,15 @@ class Admin extends Component {
   }
 
   render() {
-    console.log(this.state.inventory);
     return (
-      <div>
-        <Button variant="contained" color="primary">
+      <div className="main">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() =>
+            logout(this.props.authorize, this.props.setAccessToken)
+          }
+        >
           Logout
         </Button>
         <form onSubmit={(e) => this.handleSubmit(e)}>
@@ -133,7 +141,8 @@ class Admin extends Component {
           <button type="submit">upload</button>
         </form>
         <br />
-        <ul>
+        <Container>test for layout</Container>
+        {/* <ul>
           {this.state.inventory.map((item) => (
             <li key={item._id}>
               <label>{item.name}</label>
@@ -155,12 +164,10 @@ class Admin extends Component {
               <hr />
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     );
   }
 }
 
 export default Admin;
-
-//               <Button onClick={() => this.deleteItem(item._id)}>X</Button>
