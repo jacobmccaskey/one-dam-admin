@@ -1,9 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { storage } from "./firebase";
 import { addToStore } from "../util";
-import Button from "@material-ui/core/Button";
-import { logout } from "../util";
-import Container from "@material-ui/core/Container";
+import VerticalNavBar from "./navigation/navbar";
+const Store = lazy(() => import("./store"));
+const Orders = lazy(() => import("./orders"));
+const Profile = lazy(() => import("./VendorProfile"));
+const Users = lazy(() => import("./users"));
 
 class Admin extends Component {
   state = {
@@ -100,72 +103,20 @@ class Admin extends Component {
 
   render() {
     return (
-      <div className="main">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() =>
-            logout(this.props.authorize, this.props.setAccessToken)
-          }
-        >
-          Logout
-        </Button>
-        <form onSubmit={(e) => this.handleSubmit(e)}>
-          <label>name:</label>
-          <input
-            type="text"
-            onChange={(e) => this.setState({ name: e.target.value })}
-            value={this.state.name}
-          />
-          <br />
-          <label>price:</label>
-          <input
-            type="number"
-            onChange={(e) => this.setState({ price: e.target.value })}
-            value={this.state.price}
-          />
-          <br />
-          <label>description:</label>
-          <input
-            type="text"
-            onChange={(e) => this.setState({ description: e.target.value })}
-            value={this.state.description}
-          />
-          <br />
-          <label>Image:</label>
-          <input
-            type="file"
-            onChange={(e) => this.setState({ imageFile: e.target.files[0] })}
-          />
-          <br />
-          <button type="submit">upload</button>
-        </form>
-        <br />
-        <Container>test for layout</Container>
-        {/* <ul>
-          {this.state.inventory.map((item) => (
-            <li key={item._id}>
-              <label>{item.name}</label>
-              <Button onClick={() => this.deleteItem(item._id)}>X</Button>
-              <br />
-
-              <label>{item.description}</label>
-              <br />
-
-              <label>{item.price}</label>
-              <br />
-              <Container maxWidth="sm" key={item._id}>
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  style={{ height: "250px", width: "auto" }}
-                />
-              </Container>
-              <hr />
-            </li>
-          ))}
-        </ul> */}
-      </div>
+      <React.Fragment>
+        <BrowserRouter>
+          {/* add cool looking loading spinner */}
+          <Suspense fallback={<div>Loading...</div>}>
+            <VerticalNavBar />
+            <Switch>
+              <Route path="/users" render={() => <Users />} />
+              <Route path="/store" render={() => <Store />} />
+              <Route path="/orders" render={() => <Orders />} />
+              <Route path="/profile" render={() => <Profile />} />
+            </Switch>
+          </Suspense>
+        </BrowserRouter>
+      </React.Fragment>
     );
   }
 }
