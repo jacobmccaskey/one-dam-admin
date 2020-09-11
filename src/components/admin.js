@@ -2,35 +2,33 @@ import React, { Component } from "react";
 import { storage } from "./firebase";
 import { addToStore } from "../util";
 import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
 
 class Admin extends Component {
   state = {
     name: "",
     imageFile: "",
+    size: "",
     price: "",
     description: "",
+    images: [],
     inventory: [],
   };
-
-  populateStore() {
-    fetch(process.env.REACT_APP_INVENTORY)
+  populateStore = () => {
+    fetch(process.env.REACT_APP_INVENTORY, {
+      method: "GET",
+      headers: {
+        "x-access-token": `${this.props.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         this.setState({
-          name: "",
-          imageFile: "",
-          price: "",
-          description: "",
           inventory: data,
         });
-        console.log("store fetched");
       })
       .catch((err) => console.error(err));
-  }
-
-  componentDidMount() {
-    this.populateStore();
-  }
+  };
 
   deleteItem = (id) => {
     let body = {
@@ -91,7 +89,14 @@ class Admin extends Component {
     this.handleUploadAndUpdateState(imageFile);
   };
 
+  componentDidMount() {
+    if (this.props.admin === true) {
+      this.populateStore();
+    }
+  }
+
   render() {
+    console.log(this.state.inventory);
     return (
       <div>
         <Button variant="contained" color="primary">
@@ -140,7 +145,13 @@ class Admin extends Component {
 
               <label>{item.price}</label>
               <br />
-              <img src={item.imageUrl} alt={item.name} />
+              <Container maxWidth="sm" key={item._id}>
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  style={{ height: "250px", width: "auto" }}
+                />
+              </Container>
               <hr />
             </li>
           ))}
@@ -151,3 +162,5 @@ class Admin extends Component {
 }
 
 export default Admin;
+
+//               <Button onClick={() => this.deleteItem(item._id)}>X</Button>

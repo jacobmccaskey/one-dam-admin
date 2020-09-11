@@ -16,19 +16,21 @@ export const addToStore = async (url, name, description, price) => {
 };
 
 export const serverAuthorize = (authorize, serverResponse) => {
+  let expiry = new Date(
+    new Date().getTime() + 60 * 60 * 24 * 1000
+  ).toUTCString();
+  console.log(expiry);
   if (serverResponse.admin === true) {
     authorize(true);
-    localStorage.setItem("admin", serverResponse.admin);
-    localStorage.setItem("token", serverResponse.token);
+    document.cookie = "admin =" + serverResponse.admin + "; expires =" + expiry;
+    document.cookie = "token =" + serverResponse.token + ";expires =" + expiry;
   }
   if (serverResponse.admin === false) {
     authorize(null);
-    localStorage.setItem("admin", null);
-    localStorage.setItem("token", null);
   }
 };
 
-export const checkLogin = (authorize) => {
+export const checkLogin = (authorize, setAccessToken) => {
   let token = localStorage.getItem("token");
   if (!token) {
     return authorize(null);
@@ -46,8 +48,9 @@ export const checkLogin = (authorize) => {
         console.log("token not validated");
         authorize(null);
       }
-      if (data.admin === "admin" && data.edit === true) {
+      if (data.admin === "admin") {
         authorize(true);
+        setAccessToken(token);
         console.log("token validated");
       }
     });
