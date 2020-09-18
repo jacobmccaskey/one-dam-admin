@@ -39,9 +39,9 @@ export const serverAuthorize = (authorize, serverResponse) => {
 
 export const checkCookie = (authorize, setAccessToken) => {
   let token = getCookie("token");
-  if (!token) {
-    return authorize(null);
-  }
+  // if (!token) {
+  //   return authorize(null);
+  // }
 
   fetch(process.env.REACT_APP_ADMIN_VERIFY, {
     method: "GET",
@@ -56,7 +56,7 @@ export const checkCookie = (authorize, setAccessToken) => {
         document.cookie = "admin=;max-age=0";
         return authorize(null);
       }
-      if (data.admin === "admin") {
+      if (data.edit === true) {
         authorize(true);
         setAccessToken(token);
       }

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import ItemAccordian from "./ItemAccordian";
 import Container from "@material-ui/core/Container";
+import { Button } from "@material-ui/core";
 
 // import { storage } from "./firebase";
 // import { addToStore } from "../util";
@@ -11,6 +13,9 @@ const useStyles = makeStyles(() => ({
     textAlign: "center",
     position: "relative",
     paddingTop: "5rem",
+  },
+  link: {
+    textDecoration: "none",
   },
 }));
 
@@ -97,6 +102,9 @@ export default function Store(props) {
   return (
     <div className={classes.root}>
       <Container>
+        <Link to="/addItem" className={classes.link}>
+          <Button variant="outlined">add item</Button>
+        </Link>
         {inventory.map((item) => (
           <ItemAccordian item={item} />
         ))}

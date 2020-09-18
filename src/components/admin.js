@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 // import { storage } from "./firebase";
 // import { addToStore } from "../util";
 import NavBar from "./navigation/navbar";
+const AddItem = lazy(() => import("./Store/addItem"));
 const Store = lazy(() => import("./Store/store"));
 const Orders = lazy(() => import("./orders"));
 const Profile = lazy(() => import("./VendorProfile"));
@@ -21,6 +22,7 @@ export default function Admin(props) {
             <Route path="/users" render={() => <Users />} />
             <Route path="/orders" render={() => <Orders />} />
             <Route path="/profile" render={() => <Profile />} />
+            <Route path="/addItem" render={() => <AddItem />} />
           </Switch>
         </Suspense>
       </BrowserRouter>

@@ -4,7 +4,6 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import { blueGrey } from "@material-ui/core/colors/blueGrey";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
@@ -16,7 +15,7 @@ const useStyles = makeStyles(() => ({
     marginRight: "2px",
   },
   appBar: {
-    backgroundColor: "#607D8B",
+    backgroundColor: "#343436",
   },
 }));
 export default function NavBar() {
