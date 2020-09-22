@@ -8,7 +8,7 @@ import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import { addTag } from "./storeFunctions";
+import { addTag, addItem } from "./storeFunctions";
 import uid from "uid";
 
 //add endpoint to API
@@ -58,7 +58,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function AddItem() {
+export default function AddItem(props) {
   const [name, setName] = useState("");
   const [imageArr, setImageArr] = useState([]);
   const [imageList, setImageList] = useState([]);
@@ -66,10 +66,9 @@ export default function AddItem() {
   const [description, setDescription] = useState("");
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [colors, setColors] = useState("");
-  const [sizes, setSizes] = useState([
-    // { size: "test", quantity: 100, gender: "male", id: uid() },
-  ]);
+  const [sizes, setSizes] = useState([]);
   const [vendor, setVendor] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   //for making tags and pushing to sizes array and totalQuantity
   const [sizeInputForTag, setSizeInput] = useState("");
@@ -80,12 +79,23 @@ export default function AddItem() {
 
   const removeTag = (target) => {
     setSizes(() => sizes.filter((tag) => tag.id !== target));
-    console.log(target);
-    console.log(sizes);
   };
 
   const submitForm = (e) => {
     e.preventDefault();
+    addItem(
+      props.accessToken,
+      name,
+      imageArr,
+      price,
+      description,
+      totalQuantity,
+      colors,
+      sizes,
+      vendor,
+      setErrorMessage
+    );
+    // console.log(imageArr);
   };
 
   useEffect(() => {
@@ -98,7 +108,7 @@ export default function AddItem() {
   return (
     <div style={{ textAlign: "center" }}>
       <Container className={classes.container}>
-        <form onSubmit={submitForm}>
+        <form onSubmit={(e) => submitForm(e)}>
           <Typography className={classes.text}>Name</Typography>
           <TextField
             variant="outlined"
@@ -138,22 +148,29 @@ export default function AddItem() {
             variant="outlined"
             size="small"
             type="file"
-            name="main-img"
+            name={uid()}
             onChange={(e) => {
-              setImageArr(() => [...imageArr, e.target.files]);
+              const file = e.target.files;
+              setImageArr((prevState) => {
+                return [...prevState, file];
+              });
             }}
           />
           <Button
             variant="outlined"
             color="primary"
             onClick={() =>
-              setImageList([...imageList, parseInt(imageList.length + 1)])
+              setImageList((prevState) => [
+                ...prevState,
+                parseInt(imageList.length + 1),
+              ])
             }
           >
             add more
           </Button>
           {imageList.map((newImage) => (
-            <React.Fragment>
+            <React.Fragment key={newImage}>
+              <br />
               <span>{newImage}:</span>
               <Input
                 key={newImage}
@@ -163,7 +180,10 @@ export default function AddItem() {
                 type="file"
                 name={uid()}
                 onChange={(e) => {
-                  setImageArr(() => [...imageArr, e.target.files[0]]);
+                  const file = e.target.files[0];
+                  setImageArr((prevState) => {
+                    return [...prevState, file];
+                  });
                 }}
               />
             </React.Fragment>
@@ -271,7 +291,7 @@ export default function AddItem() {
             value={price}
           ></Input>
           <br />
-          <Button color="primary" variant="outlined">
+          <Button color="primary" variant="outlined" type="submit">
             Submit
           </Button>
         </form>

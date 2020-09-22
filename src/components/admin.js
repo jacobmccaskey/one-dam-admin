@@ -22,7 +22,7 @@ export default function Admin(props) {
             <Route path="/users" render={() => <Users />} />
             <Route path="/orders" render={() => <Orders />} />
             <Route path="/profile" render={() => <Profile />} />
-            <Route path="/addItem" render={() => <AddItem />} />
+            <Route path="/addItem" render={() => <AddItem {...props} />} />
           </Switch>
         </Suspense>
       </BrowserRouter>
