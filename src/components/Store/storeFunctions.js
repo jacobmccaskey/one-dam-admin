@@ -4,8 +4,8 @@ import validator from "validator";
 import AWS from "aws-sdk";
 
 const s3 = new AWS.S3({
-  accessKeyId: "AKIAJB5LEG3TMD5WOUIQ",
-  secretAccessKey: "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",
+  accessKeyId: process.env.REACT_APP_AWSID,
+  secretAccessKey: process.env.REACT_APP_AWSKEY,
 });
 
 //function for uploading file to s3 bucket
