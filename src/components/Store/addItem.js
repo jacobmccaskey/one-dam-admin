@@ -61,7 +61,7 @@ const useStyles = makeStyles(() => ({
 export default function AddItem(props) {
   const [name, setName] = useState("");
   const [imageArr, setImageArr] = useState([]);
-  const [imageList, setImageList] = useState([]);
+  const [uploadMultiplePhotos, setUploadMultiplePhotos] = useState(false);
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
   const [totalQuantity, setTotalQuantity] = useState(0);
@@ -70,12 +70,27 @@ export default function AddItem(props) {
   const [vendor, setVendor] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  //hooks for individual images
+  const [imageOne, setImageOne] = useState("");
+  const [imageTwo, setImageTwo] = useState("");
+  const [imageThree, setImageThree] = useState("");
+  const [imageFour, setImageFour] = useState("");
+  const [imageFive, setImageFive] = useState("");
+  const [imageSix, setImageSix] = useState("");
+
   //for making tags and pushing to sizes array and totalQuantity
   const [sizeInputForTag, setSizeInput] = useState("");
   const [quantityInputForTag, setQuantity] = useState(0);
   const [genderForTag, setGender] = useState("");
 
   const classes = useStyles();
+  const imageList = [
+    { upload: setImageTwo },
+    { upload: setImageThree },
+    { upload: setImageFour },
+    { upload: setImageFive },
+    { upload: setImageSix },
+  ];
 
   const removeTag = (target) => {
     setSizes(() => sizes.filter((tag) => tag.id !== target));
@@ -83,18 +98,28 @@ export default function AddItem(props) {
 
   const submitForm = (e) => {
     e.preventDefault();
-    addItem(
-      props.accessToken,
-      name,
-      imageArr,
-      price,
-      description,
-      totalQuantity,
-      colors,
-      sizes,
-      vendor,
-      setErrorMessage
-    );
+    setImageArr([
+      imageOne,
+      imageTwo,
+      imageThree,
+      imageFour,
+      imageFive,
+      imageSix,
+    ]);
+    addItem(imageArr);
+    // console.log(imageArr);
+    // addItem(
+    //   props.accessToken,
+    //   name,
+    //   imageArr,
+    //   price,
+    //   description,
+    //   totalQuantity,
+    //   colors,
+    //   sizes,
+    //   vendor,
+    //   setErrorMessage
+    // );
     // console.log(imageArr);
   };
 
@@ -143,51 +168,48 @@ export default function AddItem(props) {
           <Typography className={classes.text}>
             Images(***upload main image first)
           </Typography>
+          <span>1: </span>
           <Input
             className={classes.marginBottom}
             variant="outlined"
             size="small"
             type="file"
+            accept="image/*"
             name={uid()}
             onChange={(e) => {
-              const file = e.target.files;
-              setImageArr((prevState) => {
-                return [...prevState, file];
-              });
+              const file = e.target.files[0];
+              setImageOne(file);
             }}
           />
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() =>
-              setImageList((prevState) => [
-                ...prevState,
-                parseInt(imageList.length + 1),
-              ])
-            }
-          >
-            add more
-          </Button>
-          {imageList.map((newImage) => (
-            <React.Fragment key={newImage}>
-              <br />
-              <span>{newImage}:</span>
-              <Input
-                key={newImage}
-                className={classes.marginBottom}
-                variant="outlined"
-                size="small"
-                type="file"
-                name={uid()}
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  setImageArr((prevState) => {
-                    return [...prevState, file];
-                  });
-                }}
-              />
-            </React.Fragment>
-          ))}
+          {uploadMultiplePhotos === false ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => setUploadMultiplePhotos(true)}
+            >
+              add more
+            </Button>
+          ) : (
+            imageList.map((newImage) => (
+              <React.Fragment key={uid()}>
+                <br />
+                <span>{imageList.indexOf(newImage) + 2}:</span>
+                <Input
+                  key={newImage}
+                  className={classes.marginBottom}
+                  variant="outlined"
+                  size="small"
+                  type="file"
+                  accept="image/*"
+                  name={uid()}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    newImage.upload(file);
+                  }}
+                />
+              </React.Fragment>
+            ))
+          )}
           <hr />
           <br />
 
