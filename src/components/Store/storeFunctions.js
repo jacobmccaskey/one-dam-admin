@@ -9,25 +9,69 @@ const s3 = new AWS.S3({
 });
 
 //function for uploading file to s3 bucket
-const uploadFileToS3 = (filesArr) => {
-  filesArr.forEach((file) => {
-    if (file !== "") {
-      const params = {
-        Bucket: "one-dam",
-        ContentType: "image/*",
-        Key: `${file.name}`,
-        Body: file,
-      };
-      s3.upload(params, (err, data) => {
-        if (err) throw err;
 
-        console.log(data);
-      });
-    }
-  });
+const uploadFileToS3 = (file) => {
+  if (file !== "") {
+    const params = {
+      Bucket: "one-dam",
+      ContentType: "image/*",
+      Key: `${file.name}`,
+      Body: file,
+      ACL: "public-read",
+    };
+
+    var upload = s3.upload(params, (err, data) => {
+      if (err) throw err;
+      return data;
+    });
+    var promise = upload.promise();
+    return promise;
+  }
 };
 
-export function addTag(size, quantity, gender, sizes, setSizes) {
+export async function addItemToInventory(
+  imageArr,
+  accessToken,
+  name,
+  price,
+  description,
+  totalQuantity,
+  colors,
+  sizes,
+  vendor,
+  setRedirect
+) {
+  let imageUrls = [];
+
+  let colorsArray = colors.trim().toLowerCase().split(",");
+
+  for (const file of imageArr) {
+    if (file !== "") {
+      const data = await uploadFileToS3(file);
+      imageUrls.push(data);
+    }
+  }
+
+  axios({
+    method: "post",
+    url: process.env.REACT_APP_ADDITEM,
+    headers: { "x-access-token": accessToken },
+    data: {
+      name: name,
+      images: imageUrls,
+      price: price,
+      description: description,
+      vendor: vendor,
+      quantity: totalQuantity,
+      sizes: sizes,
+      colors: colorsArray,
+    },
+  }).then((res) => {
+    if (res.status === 200) setRedirect(true);
+  });
+}
+
+export function addTag(size, quantity, gender, setSizes) {
   setSizes((prevState) => [
     ...prevState,
     {
@@ -37,38 +81,4 @@ export function addTag(size, quantity, gender, sizes, setSizes) {
       id: uid(),
     },
   ]);
-}
-
-// export function addItem(
-//   token,
-//   name,
-//   imageArr,
-//   price,
-//   description,
-//   totalQuantity,
-//   colors,
-//   sizes,
-//   vendor,
-//   setErrorMessage
-// ) {
-//   let colorsArray = colors.trim().toLowerCase().split(",");
-//   axios({
-//     method: "post",
-//     url: process.env.REACT_APP_ADDITEM,
-//     headers: { "x-access-token": token },
-//     data: {
-//       name: name,
-//       images: imageArr,
-//       price: price,
-//       description: description,
-//       vendor: vendor,
-//       quantity: totalQuantity,
-//       sizes: sizes,
-//       colors: colorsArray,
-//     },
-//   }).then((response) => console.log(response));
-// }
-
-export function addItem(imageArr) {
-  uploadFileToS3(imageArr);
 }
