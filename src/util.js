@@ -1,19 +1,19 @@
-export const addToStore = async (url, name, description, price) => {
-  let body = {
-    name: name,
-    price: price,
-    description: description,
-    imageUrl: url,
-  };
-  fetch(process.env.REACT_APP_ADDITEM, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  })
-    .then((res) => res.json())
-    .then((data) => data)
-    .catch((err) => console.error(err));
-};
+// export const addToStore = async (url, name, description, price) => {
+//   let body = {
+//     name: name,
+//     price: price,
+//     description: description,
+//     imageUrl: url,
+//   };
+//   fetch(process.env.REACT_APP_ADDITEM, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(body),
+//   })
+//     .then((res) => res.json())
+//     .then((data) => data)
+//     .catch((err) => console.error(err));
+// };
 
 export const serverAuthorize = (authorize, serverResponse) => {
   let expiry = new Date(

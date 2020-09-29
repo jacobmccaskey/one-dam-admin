@@ -29,6 +29,28 @@ const uploadFileToS3 = (file) => {
   }
 };
 
+const deleteFileFromS3 = (fileArray) => {
+  // const objectKeys = [];
+  // fileArray.forEach((file) => [...objectKeys, { Key: file.Key }]);
+  // console.log(objectKeys);
+
+  var params = {
+    Bucket: "one-dam",
+    Delete: {
+      Objects: fileArray.map((file) => ({ Key: file.key })),
+      Quiet: false,
+    },
+  };
+  var deleteFile = s3.deleteObjects(params, function (err, data) {
+    if (err) console.log(err, err.stack);
+    // an error occurred
+    else console.log(data); // successful response
+  });
+
+  var promiseToDelete = deleteFile.promise();
+  return promiseToDelete;
+};
+
 export async function addItemToInventory(
   imageArr,
   accessToken,
@@ -70,6 +92,28 @@ export async function addItemToInventory(
     if (res.status === 200) setRedirect(true);
   });
 }
+
+export const handleDelete = async (
+  itemID,
+  itemImages,
+  accessToken,
+  populateStore
+) => {
+  if (Array.isArray(itemImages) || itemImages.length) {
+    const deletedFile = await deleteFileFromS3(itemImages);
+    return deletedFile;
+  }
+
+  return axios({
+    method: "delete",
+    url: `${process.env.REACT_APP_DELETE_ITEM}/${itemID}`,
+    headers: { "x-access-token": accessToken },
+  }).then(() => populateStore());
+};
+
+export const handleEdit = ({ item }) => {
+  console.log({ item });
+};
 
 export function addTag(size, quantity, gender, setSizes) {
   setSizes((prevState) => [
