@@ -29,26 +29,49 @@ const uploadFileToS3 = (file) => {
   }
 };
 
+//bug with deleting multiple files
 const deleteFileFromS3 = (fileArray) => {
   // const objectKeys = [];
-  // fileArray.forEach((file) => [...objectKeys, { Key: file.Key }]);
-  // console.log(objectKeys);
+  // for (const file of fileArray) {
+  //   objectKeys.push({ Key: `${file.Key}` });
+  // }
 
-  var params = {
-    Bucket: "one-dam",
-    Delete: {
-      Objects: fileArray.map((file) => ({ Key: file.key })),
-      Quiet: false,
-    },
-  };
-  var deleteFile = s3.deleteObjects(params, function (err, data) {
-    if (err) console.log(err, err.stack);
-    // an error occurred
-    else console.log(data); // successful response
-  });
+  // var params = {
+  //   Bucket: "one-dam",
+  //   Delete: {
+  //     Objects: [{ Key: "hanes.jpg" }, { Key: "hanes.jpg" }],
+  //     Quiet: false,
+  //   },
+  // };
+  // var deleteFile = s3.deleteObjects(params, function (err, data) {
+  //   if (err) console.log(err, err.stack);
+  //   // an error occurred
+  //   else console.log(data); // successful response
+  // });
 
-  var promiseToDelete = deleteFile.promise();
-  return promiseToDelete;
+  // var promiseToDelete = deleteFile.promise();
+  // return promiseToDelete;
+
+  for (const file of fileArray) {
+    if (file === null) {
+      continue;
+    }
+    if (file !== null) {
+      s3.deleteObject(
+        {
+          Bucket: "one-dam",
+          Key: `${file.Key}`,
+        },
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(result);
+          }
+        }
+      );
+    }
+  }
 };
 
 export async function addItemToInventory(
@@ -99,9 +122,8 @@ export const handleDelete = async (
   accessToken,
   populateStore
 ) => {
-  if (Array.isArray(itemImages) || itemImages.length) {
-    const deletedFile = await deleteFileFromS3(itemImages);
-    return deletedFile;
+  if (Array.isArray(itemImages) && itemImages.length !== 0) {
+    deleteFileFromS3(itemImages);
   }
 
   return axios({
