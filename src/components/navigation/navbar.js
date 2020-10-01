@@ -36,8 +36,8 @@ export default function NavBar() {
             <Link to="/orders" className={classes.button}>
               <Button variant="contained">orders</Button>
             </Link>
-            <Link to="/users" className={classes.button}>
-              <Button variant="contained">Users</Button>
+            <Link to="/vendors" className={classes.button}>
+              <Button variant="contained">Vendors</Button>
             </Link>
             <Link to="/profile" className={classes.button}>
               <Button variant="contained">profile</Button>

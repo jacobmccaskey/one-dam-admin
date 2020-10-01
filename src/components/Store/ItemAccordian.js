@@ -14,9 +14,20 @@ const useStyles = makeStyles(() => ({
   controls: {
     width: "100%",
     textAlign: "right",
+    display: "block",
   },
   span: {
     color: "grey",
+  },
+  container: {
+    textAlign: "left",
+  },
+  sizeDiv: {
+    textAlign: "center",
+    border: "solid",
+    borderRadius: "5px",
+    borderWidth: "thin",
+    marginBottom: "0.5rem",
   },
 }));
 
@@ -25,7 +36,7 @@ export default function ItemAccordian(props) {
   const classes = useStyles();
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" key={item._id}>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -37,40 +48,79 @@ export default function ItemAccordian(props) {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <ul>
-            <li>
-              <span className={classes.span}>Name:</span> {item.name}
-            </li>
-            <br />
-            <li>
-              <span className={classes.span}>Description:</span>{" "}
-              {item.description}
-            </li>
-            <br />
-            <li>
-              <span className={classes.span}>Price:</span> ${item.price}
-            </li>
-            <br />
-            <li>
-              <span className={classes.span}>ID:</span> {item._id}
-            </li>
-            <br />
-          </ul>
-          <div className={classes.controls}>
-            <Button
-              onClick={() =>
-                handleDelete(item._id, item.images, accessToken, populateStore)
-              }
-            >
-              <DeleteIcon />
-            </Button>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={(item) => handleEdit(item)}
-            >
-              Edit
-            </Button>
+          <div className={classes.container}>
+            <ul>
+              <li>
+                <span className={classes.span}>Name:</span> {item.name}
+              </li>
+              <br />
+              <li>
+                <span className={classes.span}>Description:</span>{" "}
+                {item.description}
+              </li>
+              <br />
+              <li>
+                <span className={classes.span}>Price:</span> ${item.price}
+              </li>
+              <br />
+              <li>
+                <p style={{ textDecoration: "underline" }}>Images</p>
+
+                {item.images.map((image) => (
+                  <React.Fragment key={image.key}>
+                    <span className={classes.span}>{image.key}</span>
+                    <br />
+                  </React.Fragment>
+                ))}
+              </li>
+              <li>
+                <span className={classes.span}>ID:</span> {item._id}
+              </li>
+              <br />
+              <li>
+                <span className={classes.span}>colors:</span>
+                {item.colors.map((color) => (
+                  <span key={color.color}> {color.color} ,</span>
+                ))}
+              </li>
+              <br />
+              <li>
+                <span className={classes.span}>Sizes:</span>
+                {item.sizes.map((item) => (
+                  <div className={classes.sizeDiv}>
+                    <span>{item.size} |</span>
+                    <span> {item.gender} |</span>
+                    <span>{item.quantity}</span>
+                  </div>
+                ))}
+              </li>
+              <br />
+              <li>
+                <span className={classes.span}>Total Inventory:</span>
+                <span>{item.quantity}</span>
+              </li>
+            </ul>
+            <div className={classes.controls}>
+              <Button
+                onClick={() =>
+                  handleDelete(
+                    item._id,
+                    item.images,
+                    accessToken,
+                    populateStore
+                  )
+                }
+              >
+                <DeleteIcon />
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={(item) => handleEdit(item)}
+              >
+                Edit
+              </Button>
+            </div>
           </div>
         </AccordionDetails>
       </Accordion>
