@@ -1,71 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
+import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { addTag, addItemToInventory } from "./storeFunctions";
 import uid from "uid";
+import { useStyles } from "./styles";
+import { useAlert } from "react-alert";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 //add endpoint to API
 const vendors = [{ name: "oneDAM" }, { name: "test" }];
 
-const useStyles = makeStyles(() => ({
-  container: {
-    display: "relative",
-    marginTop: "5rem",
-    marginBottom: "5rem",
-  },
-  marginBottom: {
-    marginBottom: "2rem",
-    width: "90%",
-  },
-  text: {
-    size: "22px",
-    textDecoration: "underline",
-    color: "grey",
-  },
-  sizeTag: {
-    backgroundColor: "lightgrey",
-    borderRadius: "2px",
-    width: "4rem",
-    display: "inline",
-    margin: "10px",
-    padding: "3px",
-  },
-  tagButton: {
-    backgroundColor: "gray",
-    marginLeft: "4px",
-    border: "none",
-    verticalAlign: "center",
-    borderRadius: "20%",
-    "&:hover": {
-      backgroundColor: "red",
-    },
-  },
-  divContainerForItemSize: {
-    textAlign: "center",
-    marginBottom: "2rem",
-    width: "100%",
-  },
-  input: {
-    marginRight: "1rem",
-    marginTop: "10px",
-  },
-}));
-
 export default function AddItem(props) {
   const [name, setName] = useState("");
   const [uploadMultiplePhotos, setUploadMultiplePhotos] = useState(false);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(0.0);
   const [description, setDescription] = useState("");
   const [totalQuantity, setTotalQuantity] = useState(0);
-  const [colors, setColors] = useState("");
+  const [color, setColor] = useState("");
+  // for all colors populated for individual size/color inputs
+  const [colors, setColors] = useState([]);
+  const [gender, setGender] = useState("");
   const [sizes, setSizes] = useState([]);
   const [vendor, setVendor] = useState("");
   const [redirectToHome, setRedirect] = useState(false);
@@ -81,7 +44,10 @@ export default function AddItem(props) {
   //for making tags and pushing to sizes array and totalQuantity
   const [sizeInputForTag, setSizeInput] = useState("");
   const [quantityInputForTag, setQuantity] = useState(0);
-  const [genderForTag, setGender] = useState("");
+
+  //hook for opening menu.
+  const [openMenu, setOpenMenu] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
   const imageList = [
@@ -92,9 +58,17 @@ export default function AddItem(props) {
     { upload: setImageSix },
   ];
 
+  const genders = ["male", "female", "unisex"];
+
+  //should probably move over to storeFunctions at some point
   const removeTag = (target) => {
-    setSizes(() => sizes.filter((tag) => tag.id !== target));
+    setColors((prevState) =>
+      prevState.filter((color) => color !== target.color)
+    );
+    setSizes(() => sizes.filter((tag) => tag.id !== target.id));
   };
+
+  const alert = useAlert();
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -117,8 +91,21 @@ export default function AddItem(props) {
       colors,
       sizes,
       vendor,
-      setRedirect
+      gender,
+      setRedirect,
+      alert
     );
+  };
+
+  const pickGender = (gender) => {
+    setGender(gender);
+    setOpenMenu(false);
+    setAnchorEl(null);
+  };
+
+  const genderMenu = (e) => {
+    setOpenMenu(true);
+    setAnchorEl(e.currentTarget);
   };
 
   useEffect(() => {
@@ -131,7 +118,7 @@ export default function AddItem(props) {
   return (
     <React.Fragment>
       {!redirectToHome ? (
-        <div style={{ textAlign: "center" }}>
+        <Paper style={{ textAlign: "center", width: "80%" }}>
           <Container className={classes.container}>
             <form onSubmit={(e) => submitForm(e)}>
               <Typography className={classes.text}>Name</Typography>
@@ -152,21 +139,9 @@ export default function AddItem(props) {
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
               ></TextField>
-
-              <Typography className={classes.text}>Colors</Typography>
-              <Typography className={classes.text} variant="body1">
-                separate colors by comma
-              </Typography>
-              <TextField
-                className={classes.marginBottom}
-                variant="outlined"
-                size="small"
-                onChange={(e) => setColors(e.target.value)}
-                value={colors}
-              />
-
+              {/* for uploading photos */}
               <Typography className={classes.text}>
-                Images(***upload main image first)
+                Images (***upload main image first)
               </Typography>
               <span>1: </span>
               <Input
@@ -212,26 +187,54 @@ export default function AddItem(props) {
               )}
               <hr />
               <br />
-
-              <Typography className={classes.text}>Sizes</Typography>
-
-              {sizes.map((tag) => (
-                <Typography
-                  className={classes.sizeTag}
-                  variant="body1"
-                  key={tag.id}
+              {/* Gender Picker */}
+              <div
+                style={{
+                  textAlign: "left",
+                  display: "inline-block",
+                  width: "80%",
+                }}
+              >
+                <Button
+                  className={classes.genderBtn}
+                  onClick={(e) => genderMenu(e)}
                 >
-                  {tag.size}
-                  <button
-                    className={classes.tagButton}
+                  {" "}
+                  Gender
+                </Button>
+                <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)}>
+                  {genders.map((gender) => (
+                    <MenuItem onClick={() => pickGender(gender)} key={gender}>
+                      {gender}
+                    </MenuItem>
+                  ))}
+                </Menu>
+                <Typography className={classes.genderView}>{gender}</Typography>
+              </div>
+              {/* inventory input for sizes and colors */}
+              <Typography className={classes.text}>Inventory</Typography>
+              <div style={{ textAlign: "left" }}>
+                {sizes.map((tag) => (
+                  <Typography
+                    style={{ backgroundColor: tag.color }}
+                    className={classes.sizeTag}
+                    variant="body1"
                     key={tag.id}
-                    value={tag.id}
-                    onClick={(e) => removeTag(e.target.value)}
                   >
-                    X
-                  </button>
-                </Typography>
-              ))}
+                    {tag.size}
+                    <button
+                      className={classes.tagButton}
+                      style={{ backgroundColor: tag.color }}
+                      key={tag.id}
+                      value={tag}
+                      onClick={() => removeTag(tag)}
+                    >
+                      <DeleteForeverIcon />
+                    </button>
+                  </Typography>
+                ))}
+              </div>
+
               <div className={classes.divContainerForItemSize}>
                 <TextField
                   type="text"
@@ -250,41 +253,32 @@ export default function AddItem(props) {
                   value={quantityInputForTag}
                 />
                 <TextField
-                  select
+                  type="text"
+                  label="color"
                   className={classes.input}
                   variant="outlined"
-                  onChange={(e) => setGender(e.target.value)}
-                  value={genderForTag}
-                >
-                  <MenuItem key="male" value="male">
-                    Male
-                  </MenuItem>
-                  <MenuItem key="female" value="female">
-                    Female
-                  </MenuItem>
-                  <MenuItem key="unisex" value="unisex">
-                    Unisex
-                  </MenuItem>
-                </TextField>
+                  onChange={(e) => setColor(e.target.value)}
+                  value={color}
+                />
+
                 <Button
                   onClick={() => {
                     addTag(
                       sizeInputForTag,
                       quantityInputForTag,
-                      genderForTag,
-                      setSizes
+                      color,
+                      setSizes,
+                      setColors
                     );
                     setSizeInput("");
                     setQuantity(0);
-                    setGender("");
+                    setColor("");
                   }}
                 >
                   add
                 </Button>
-                <Typography className={classes.text}>
-                  Quantity: {totalQuantity}
-                </Typography>
               </div>
+              {/* for adding vendor */}
               <Typography className={classes.text}>Vendor</Typography>
               <TextField
                 className={classes.marginBottom}
@@ -314,12 +308,20 @@ export default function AddItem(props) {
                 value={price}
               ></Input>
               <br />
-              <Button color="primary" variant="outlined" type="submit">
+              <Typography className={classes.text}>
+                Quantity: {totalQuantity}
+              </Typography>
+              <Button
+                color="primary"
+                variant="outlined"
+                type="submit"
+                className={classes.newItemBtn}
+              >
                 Submit
               </Button>
             </form>
           </Container>
-        </div>
+        </Paper>
       ) : (
         <Redirect to="/" />
       )}

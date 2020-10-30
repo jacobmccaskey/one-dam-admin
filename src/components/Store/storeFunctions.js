@@ -1,6 +1,6 @@
 import uid from "uid";
 import axios from "axios";
-import validator from "validator";
+// import validator from "validator";
 import AWS from "aws-sdk";
 
 const s3 = new AWS.S3({
@@ -31,27 +31,6 @@ const uploadFileToS3 = (file) => {
 
 //bug with deleting multiple files
 const deleteFileFromS3 = (fileArray) => {
-  // const objectKeys = [];
-  // for (const file of fileArray) {
-  //   objectKeys.push({ Key: `${file.Key}` });
-  // }
-
-  // var params = {
-  //   Bucket: "one-dam",
-  //   Delete: {
-  //     Objects: [{ Key: "hanes.jpg" }, { Key: "hanes.jpg" }],
-  //     Quiet: false,
-  //   },
-  // };
-  // var deleteFile = s3.deleteObjects(params, function (err, data) {
-  //   if (err) console.log(err, err.stack);
-  //   // an error occurred
-  //   else console.log(data); // successful response
-  // });
-
-  // var promiseToDelete = deleteFile.promise();
-  // return promiseToDelete;
-
   for (const file of fileArray) {
     if (file === null) {
       continue;
@@ -84,11 +63,35 @@ export async function addItemToInventory(
   colors,
   sizes,
   vendor,
-  setRedirect
+  gender,
+  setRedirect,
+  alert
 ) {
   let imageUrls = [];
 
-  let colorsArray = colors.trim().toLowerCase().split(",");
+  const arrayToCheck = [
+    imageArr,
+    accessToken,
+    name,
+    price,
+    description,
+    totalQuantity,
+    colors,
+    sizes,
+    vendor,
+    gender,
+  ];
+
+  //weak validation before hitting server. returns alert to user
+  for (const x of arrayToCheck) {
+    if (x === null || x === "" || x === undefined || x.length === 0)
+      return alert.show(
+        "Please make sure all fields have been completed... Matt"
+      );
+  }
+
+  const itemPrice = Number.parseFloat(price).toFixed(2);
+  const itemGender = gender.trim();
 
   for (const file of imageArr) {
     if (file !== "") {
@@ -104,12 +107,13 @@ export async function addItemToInventory(
     data: {
       name: name,
       images: imageUrls,
-      price: price,
+      price: itemPrice,
       description: description,
       vendor: vendor,
       quantity: totalQuantity,
       sizes: sizes,
-      colors: colorsArray,
+      gender: itemGender,
+      colors: colors,
     },
   }).then((res) => {
     if (res.status === 200) setRedirect(true);
@@ -137,14 +141,16 @@ export const handleEdit = ({ item }) => {
   console.log({ item });
 };
 
-export function addTag(size, quantity, gender, setSizes) {
+export function addTag(size, quantity, color, setSizes, setColors) {
   setSizes((prevState) => [
     ...prevState,
     {
-      size: size,
+      size: size.toLowerCase(),
       quantity: quantity,
-      gender: gender,
+      color: color,
       id: uid(),
     },
   ]);
+
+  setColors((prevState) => [...prevState, color]);
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Admin from "./components/admin";
 import Login from "./components/login";
+import ModalProvider from "./components/modalProvider";
 import { serverAuthorize, checkCookie } from "./util";
 // import validator from "validator";
 
@@ -42,22 +43,24 @@ export default function App() {
 
   return (
     <div>
-      {admin === null ? (
-        <Login
-          username={username}
-          password={password}
-          validateCredentials={validateCredentials}
-          userVal={userVal}
-          secretVal={secretVal}
-        />
-      ) : (
-        <Admin
-          admin={admin}
-          accessToken={accessToken}
-          authorize={authorize}
-          setAccessToken={setAccessToken}
-        />
-      )}
+      <ModalProvider>
+        {admin === null ? (
+          <Login
+            username={username}
+            password={password}
+            validateCredentials={validateCredentials}
+            userVal={userVal}
+            secretVal={secretVal}
+          />
+        ) : (
+          <Admin
+            admin={admin}
+            accessToken={accessToken}
+            authorize={authorize}
+            setAccessToken={setAccessToken}
+          />
+        )}
+      </ModalProvider>
     </div>
   );
 }

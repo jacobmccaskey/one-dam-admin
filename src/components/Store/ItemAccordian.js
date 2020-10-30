@@ -10,7 +10,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Button from "@material-ui/core/Button";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   controls: {
     width: "100%",
     textAlign: "right",
@@ -29,6 +29,13 @@ const useStyles = makeStyles(() => ({
     borderWidth: "thin",
     marginBottom: "0.5rem",
   },
+  accordianBtn: {
+    float: "right",
+    zIndex: 1000,
+    textTransform: "none",
+    backgroundColor: "#007791",
+    marginLeft: theme.spacing(2),
+  },
 }));
 
 export default function ItemAccordian(props) {
@@ -43,9 +50,13 @@ export default function ItemAccordian(props) {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography variant="body1">
-            {item.name} id: {item._id}
-          </Typography>
+          <Typography variant="body1">{item.name}</Typography>
+          <Button
+            className={classes.accordianBtn}
+            onClick={props.replinishStock}
+          >
+            Replinish Stock
+          </Button>
         </AccordionSummary>
         <AccordionDetails>
           <div className={classes.container}>

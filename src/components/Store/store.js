@@ -5,6 +5,7 @@ import ItemAccordian from "./ItemAccordian";
 import Container from "@material-ui/core/Container";
 import { Button } from "@material-ui/core";
 import { handleDelete, handleEdit } from "./storeFunctions";
+import { useAlert } from "react-alert";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -21,6 +22,11 @@ const useStyles = makeStyles(() => ({
 export default function Store(props) {
   const [inventory, setInventory] = useState([]);
   const classes = useStyles();
+  const alert = useAlert();
+
+  const replinishStock = () => {
+    alert.show("this feature is coming soon... Matt");
+  };
 
   const populateStore = useCallback(() => {
     fetch(process.env.REACT_APP_INVENTORY, {
@@ -39,7 +45,6 @@ export default function Store(props) {
   useEffect(() => {
     populateStore();
   }, [populateStore]);
-  console.log(inventory);
 
   return (
     <div className={classes.root}>
@@ -57,6 +62,7 @@ export default function Store(props) {
             accessToken={props.accessToken}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
+            replinishStock={replinishStock}
           />
         ))}
       </Container>
