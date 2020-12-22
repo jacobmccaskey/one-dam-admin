@@ -147,7 +147,7 @@ export function addTag(size, quantity, color, setSizes, setColors) {
     {
       size: size.toLowerCase(),
       quantity: quantity,
-      color: color,
+      color: color.toLowerCase(),
       id: uid(),
     },
   ]);

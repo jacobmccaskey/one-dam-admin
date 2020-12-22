@@ -22,7 +22,7 @@ export const useStyles = makeStyles((theme) => ({
     // width: "4rem",
     display: "inline-block",
     margin: theme.spacing(1),
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     fontWeight: 500,
   },
   tagButton: {
@@ -38,7 +38,8 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   divContainerForItemSize: {
-    textAlign: "center",
+    textAlign: "left",
+    verticalAlign: "center",
     marginBottom: "2rem",
     width: "100%",
   },
@@ -54,12 +55,18 @@ export const useStyles = makeStyles((theme) => ({
     color: "black",
   },
   genderBtn: {
-    backgroundColor: "#0066b2",
+    backgroundColor: "white",
+    width: "50%",
     color: "black",
     marginRight: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
   genderView: {
     display: "inline",
-    fontSize: "18px",
+    fontSize: "20px",
+    fontWeight: "500",
+    border: "1px solid black",
+    borderRadius: "2px",
+    padding: "0.5rem",
   },
 }));
