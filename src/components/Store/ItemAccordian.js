@@ -1,5 +1,5 @@
-import React from "react";
-import axios from "axios";
+import React, { useState } from "react";
+// import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Accordion from "@material-ui/core/Accordion";
@@ -9,6 +9,9 @@ import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Button from "@material-ui/core/Button";
+import AddBoxIcon from "@material-ui/icons/AddBox";
+import TextField from "@material-ui/core/TextField";
+import Axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   controls: {
@@ -31,32 +34,49 @@ const useStyles = makeStyles((theme) => ({
   },
   accordianBtn: {
     float: "right",
+    textAlign: "center",
     zIndex: 1000,
     textTransform: "none",
+    textDecoration: "none",
     backgroundColor: "#007791",
     marginLeft: theme.spacing(2),
+    width: "100%",
   },
 }));
 
 export default function ItemAccordian(props) {
-  const { item, handleDelete, handleEdit, accessToken, populateStore } = props;
+  const { item, handleDelete, accessToken, populateStore } = props;
+  const [inputForInventory, setInputForInventory] = useState("none");
+  const [stockNum, setStockNum] = useState(0);
+  const handleViewStockInput = () => {
+    setInputForInventory("block");
+  };
+  const replinishStock = () => {
+    setInputForInventory("none");
+    Axios({
+      method: "put",
+      url: process.env.REACT_APP_REPLINISH_ITEM,
+      headers: {
+        "x-access-token": accessToken,
+      },
+      data: {
+        id: item._id,
+        quantity: stockNum,
+      },
+    }).then((res) => window.location.reload());
+    // setStockNum(0);
+  };
   const classes = useStyles();
 
   return (
     <Container maxWidth="lg" key={item._id}>
-      <Accordion>
+      <Accordion style={{ padding: "0.5rem", margin: "1rem" }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
           <Typography variant="body1">{item.name}</Typography>
-          <Button
-            className={classes.accordianBtn}
-            onClick={props.replinishStock}
-          >
-            Replinish Stock
-          </Button>
         </AccordionSummary>
         <AccordionDetails>
           <div className={classes.container}>
@@ -87,28 +107,36 @@ export default function ItemAccordian(props) {
               <li>
                 <span className={classes.span}>ID:</span> {item._id}
               </li>
-              <br />
-              <li>
-                <span className={classes.span}>colors:</span>
-                {item.colors.map((color) => (
-                  <span key={color.color}> {color.color} ,</span>
-                ))}
-              </li>
+
               <br />
               <li>
                 <span className={classes.span}>Sizes:</span>
                 {item.sizes.map((item) => (
-                  <div className={classes.sizeDiv}>
-                    <span>{item.size} |</span>
-                    <span> {item.gender} |</span>
-                    <span>{item.quantity}</span>
+                  <div className={classes.sizeDiv} key={item.size}>
+                    <span>{item.size} </span>
+                    {/* <span>
+                      
+                    </span>
+                    <span>{item.quantity}</span> */}
                   </div>
                 ))}
               </li>
               <br />
               <li>
                 <span className={classes.span}>Total Inventory:</span>
-                <span>{item.quantity}</span>
+                <span> {item.quantity}</span>
+              </li>
+              <li>
+                <span className={classes.span}>Returns:</span>
+                <span> {item.returns}</span>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <span className={classes.span}>Tags:</span>
+                {item.tags.map((tag) => (
+                  <span key={tag}>| {tag} | </span>
+                ))}
               </li>
             </ul>
             <div className={classes.controls}>
@@ -127,10 +155,21 @@ export default function ItemAccordian(props) {
               <Button
                 color="secondary"
                 variant="contained"
-                onClick={(item) => handleEdit(item)}
+                onClick={(item) => handleViewStockInput(item)}
               >
-                Edit
+                replinish
               </Button>
+              <br />
+              <div style={{ display: inputForInventory, margin: "1rem" }}>
+                <TextField
+                  type="number"
+                  value={stockNum}
+                  onChange={(e) => setStockNum(e.target.value)}
+                />
+                <Button onClick={replinishStock}>
+                  <AddBoxIcon style={{ height: "100%" }} />
+                </Button>
+              </div>
             </div>
           </div>
         </AccordionDetails>

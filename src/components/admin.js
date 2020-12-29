@@ -18,9 +18,12 @@ export default function Admin(props) {
             <Route exact path="/" render={() => <Store {...props} />} />
 
             <Route path="/Vendors" render={() => <Vendors />} />
-            <Route path="/orders" render={() => <Orders />} />
+            <Route path="/orders" render={() => <Orders {...props} />} />
             <Route path="/profile" render={() => <Profile />} />
-            <Route path="/addItem" render={() => <AddItem {...props} />} />
+            <Route
+              path="/addItem/:productId"
+              render={() => <AddItem {...props} />}
+            />
           </Switch>
         </Suspense>
       </BrowserRouter>

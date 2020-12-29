@@ -1,4 +1,4 @@
-import uid from "uid";
+// import uid from "uid";
 import axios from "axios";
 // import validator from "validator";
 import AWS from "aws-sdk";
@@ -60,12 +60,12 @@ export async function addItemToInventory(
   price,
   description,
   totalQuantity,
-  colors,
   sizes,
   vendor,
   gender,
   setRedirect,
-  alert
+  alert,
+  tags
 ) {
   let imageUrls = [];
 
@@ -76,10 +76,10 @@ export async function addItemToInventory(
     price,
     description,
     totalQuantity,
-    colors,
     sizes,
     vendor,
     gender,
+    tags,
   ];
 
   //weak validation before hitting server. returns alert to user
@@ -113,7 +113,7 @@ export async function addItemToInventory(
       quantity: totalQuantity,
       sizes: sizes,
       gender: itemGender,
-      colors: colors,
+      tags: tags,
     },
   }).then((res) => {
     if (res.status === 200) setRedirect(true);
@@ -141,16 +141,16 @@ export const handleEdit = ({ item }) => {
   console.log({ item });
 };
 
-export function addTag(size, quantity, color, setSizes, setColors) {
-  setSizes((prevState) => [
-    ...prevState,
-    {
-      size: size.toLowerCase(),
-      quantity: quantity,
-      color: color.toLowerCase(),
-      id: uid(),
-    },
-  ]);
+// export function addTag(size, quantity, color, setSizes, setColors) {
+//   setSizes((prevState) => [
+//     ...prevState,
+//     {
+//       size: size.toLowerCase(),
+//       quantity: quantity,
+//       color: color.toLowerCase(),
+//       id: uid(),
+//     },
+//   ]);
 
-  setColors((prevState) => [...prevState, color]);
-}
+//   setColors((prevState) => [...prevState, color]);
+// }

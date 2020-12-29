@@ -24,10 +24,6 @@ export default function Store(props) {
   const classes = useStyles();
   const alert = useAlert();
 
-  const replinishStock = () => {
-    alert.show("this feature is coming soon... Matt");
-  };
-
   const populateStore = useCallback(() => {
     fetch(process.env.REACT_APP_INVENTORY, {
       method: "GET",
@@ -49,7 +45,7 @@ export default function Store(props) {
   return (
     <div className={classes.root}>
       <Container>
-        <Link to="/addItem" className={classes.link}>
+        <Link to="/addItem/new" className={classes.link}>
           <Button variant="outlined" style={{ marginBottom: "1rem" }}>
             add item
           </Button>
@@ -62,7 +58,6 @@ export default function Store(props) {
             accessToken={props.accessToken}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
-            replinishStock={replinishStock}
           />
         ))}
       </Container>

@@ -69,4 +69,20 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: "2px",
     padding: "0.5rem",
   },
+  wrapperAddItem: {
+    width: "70%",
+    border: "grey",
+    borderRadius: "2px",
+    [theme.breakpoints.up("lg")]: {
+      width: "50%",
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "90%",
+    },
+  },
+  variantBox: {
+    padding: theme.spacing(1),
+    margin: theme.spacing(1),
+    display: "inline-block",
+  },
 }));

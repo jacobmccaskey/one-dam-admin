@@ -10,7 +10,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { addItemToInventory } from "./storeFunctions";
 import uid from "uid";
 import { useStyles } from "./styles";
@@ -18,21 +18,28 @@ import { useAlert } from "react-alert";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import MultipleImageUpload from "./MultipleImageUpload";
 import Box from "@material-ui/core/Box";
+import axios from "axios";
 
 //add endpoint to API
 const vendors = [{ name: "oneDAM" }];
 
 export default function AddItem(props) {
+  const { productId } = useParams();
   const [name, setName] = useState("");
   const [uploadMultiplePhotos, setUploadMultiplePhotos] = useState(false);
   const [price, setPrice] = useState(0.0);
   const [description, setDescription] = useState("");
   const [totalQuantity, setTotalQuantity] = useState(0);
-  const [color, setColor] = useState("");
+  // const [color, setColor] = useState("");
   // for all colors populated for individual size/color inputs
-  const [colors, setColors] = useState([]);
+  // const [colors, setColors] = useState([]);
   const [gender, setGender] = useState("");
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState([]);
   const [sizes, setSizes] = useState([]);
+  const [variant, setVariant] = useState([]);
+  const [variantColor, setVariantColor] = useState("");
+  const [variantQuantity, setVariantQuantity] = useState(0);
   const [vendor, setVendor] = useState("");
   const [redirectToHome, setRedirect] = useState(false);
 
@@ -46,41 +53,51 @@ export default function AddItem(props) {
 
   //for making tags and pushing to sizes array and totalQuantity
   const [sizeInputForTag, setSizeInput] = useState("");
-  const [quantityInputForTag, setQuantity] = useState(0);
+  // const [quantityInputForTag, setQuantity] = useState(0);
 
   //hook for opening menu.
   const [openMenu, setOpenMenu] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
-  // const imageList = [
-  //   { upload: setImageTwo },
-  //   { upload: setImageThree },
-  //   { upload: setImageFour },
-  //   { upload: setImageFive },
-  //   { upload: setImageSix },
-  // ];
 
   const genders = ["male", "female", "unisex"];
 
-  function addTag(size, quantity, color) {
+  function addSizeVariant() {
+    setVariant((prevState) => [
+      ...prevState,
+      {
+        color: variantColor,
+        quantity: variantQuantity,
+      },
+    ]);
+    setTotalQuantity((prevState) => (prevState += variantQuantity));
+    setVariantColor("");
+    setVariantQuantity(0);
+  }
+
+  function addProductVariation() {
+    let totalCount = 0;
+    variant.forEach((item) => (totalCount += Number(item.quantity)));
     setSizes((prevState) => [
       ...prevState,
       {
-        size: size.toLowerCase(),
-        quantity: quantity,
-        color: color.toLowerCase(),
+        size: sizeInputForTag.toLowerCase(),
+        variant: variant,
+        totalCount: totalCount,
         id: uid(),
       },
     ]);
-
-    setColors((prevState) => [...prevState, color]);
+    setSizeInput("");
+    setVariantColor("");
+    setVariantQuantity(0);
+    setVariant([]);
+    console.log(sizes);
   }
-  const removeTag = (target) => {
-    setColors((prevState) =>
-      prevState.filter((color) => color !== target.color)
-    );
+  const removeProductSize = (target) => {
+    setTotalQuantity((prevState) => (prevState -= target.totalCount));
     setSizes(() => sizes.filter((tag) => tag.id !== target.id));
+    console.log(target);
   };
 
   const alert = useAlert();
@@ -103,13 +120,19 @@ export default function AddItem(props) {
       price,
       description,
       totalQuantity,
-      colors,
       sizes,
       vendor,
       gender,
       setRedirect,
-      alert
+      alert,
+      tags
     );
+  };
+
+  const pushToTagArray = () => {
+    let tag = tagInput;
+    setTags((prevState) => [...prevState, tag]);
+    setTagInput("");
   };
 
   const pickGender = (gender) => {
@@ -123,17 +146,29 @@ export default function AddItem(props) {
     setAnchorEl(e.currentTarget);
   };
 
+  // useEffect(() => {
+  //   let count = 0;
+  //   if (sizes.length === 0) return setTotalQuantity(0);
+  //   sizes.forEach((size) => (count += parseInt(size.quantity)));
+  //   return setTotalQuantity(count);
+  // }, [sizes]);
+
   useEffect(() => {
-    let count = 0;
-    if (sizes.length === 0) return setTotalQuantity(0);
-    sizes.forEach((size) => (count += parseInt(size.quantity)));
-    return setTotalQuantity(count);
-  }, [sizes]);
+    //for later development to edit items
+    if (productId === "new") return;
+    if (productId) {
+      axios({
+        method: "get",
+        url: `${process.env.REACT_APP_GET_ITEM}/${productId}`,
+      }).then((res) => console.log(res));
+      console.log(productId);
+    } else return null;
+  }, [productId]);
 
   return (
     <React.Fragment>
       {!redirectToHome ? (
-        <div style={{ width: "80%" }}>
+        <div className={classes.wrapperAddItem}>
           <Link to="/" style={{ textDecoration: "none" }}>
             <Button style={{ marginTop: "5rem", marginLeft: "1rem" }}>
               <Typography>{"<"}Back to home</Typography>
@@ -188,26 +223,6 @@ export default function AddItem(props) {
                     add more
                   </Button>
                 ) : (
-                  // imageList.map((newImage) => (
-                  //   <React.Fragment key={uid()}>
-                  //     <br />
-                  //     <span>{imageList.indexOf(newImage) + 2}:</span>
-                  //     <Input
-                  //       key={newImage}
-                  //       className={classes.marginBottom}
-                  //       variant="outlined"
-                  //       size="small"
-                  //       type="file"
-                  //       accept="image/*"
-                  //       name={uid()}
-                  //       onChange={(e) => {
-                  //         const file =
-                  //           e.target.files[imageList.indexOf(newImage) + 1];
-                  //         newImage.upload(file);
-                  //       }}
-                  //     />
-                  //   </React.Fragment>
-                  // ))
                   <MultipleImageUpload
                     setImageTwo={setImageTwo}
                     setImageThree={setImageThree}
@@ -264,7 +279,7 @@ export default function AddItem(props) {
                         }}
                         key={tag.id}
                         value={tag}
-                        onClick={() => removeTag(tag)}
+                        onClick={() => removeProductSize(tag)}
                       >
                         <DeleteForeverIcon />
                       </button>
@@ -284,41 +299,72 @@ export default function AddItem(props) {
                     onChange={(e) => setSizeInput(e.target.value)}
                     value={sizeInputForTag}
                   />
+                  <br />
                   <TextField
                     type="number"
                     label="quantity"
                     className={classes.input}
                     variant="outlined"
-                    onChange={(e) => setQuantity(e.target.value)}
-                    value={quantityInputForTag}
+                    onChange={(e) => setVariantQuantity(Number(e.target.value))}
+                    value={variantQuantity}
                   />
                   <TextField
                     type="text"
                     label="color"
                     className={classes.input}
                     variant="outlined"
-                    onChange={(e) => setColor(e.target.value)}
-                    value={color}
+                    onChange={(e) => setVariantColor(e.target.value)}
+                    value={variantColor}
                   />
-
                   <Button
                     onClick={() => {
-                      addTag(
-                        sizeInputForTag,
-                        quantityInputForTag,
-                        color
-                        // setSizes,
-                        // setColors
-                      );
-                      setSizeInput("");
-                      setQuantity(0);
-                      setColor("");
+                      addSizeVariant();
+                      setVariantColor("");
+                      setVariantQuantity(0);
                     }}
-                    style={{ verticalAlign: "middle" }}
+                    style={{ verticalAlign: "center" }}
                   >
-                    add
+                    add variant
+                  </Button>
+                  <br />
+                  {variant.map((type) => (
+                    <div className={classes.variantBox} key={type.color}>
+                      <span>
+                        {type.color} | {type.quantity}
+                      </span>
+                    </div>
+                  ))}
+
+                  <br />
+                  <Button onClick={addProductVariation} variant="contained">
+                    Add Product Size
                   </Button>
                 </div>
+              </Paper>
+              <Paper style={{ padding: "0.5rem", marginBottom: "0.5rem" }}>
+                <Typography>Product Tags</Typography>
+                <TextField
+                  type="text"
+                  label="tags"
+                  variant="outlined"
+                  onChange={(e) => setTagInput(e.target.value)}
+                  value={tagInput}
+                  // onEnter={pushToTagArray}
+                />
+                <Button onClick={pushToTagArray}>
+                  <Typography>Add</Typography>
+                </Button>
+                {tags.map((tag) => (
+                  <div
+                    style={{
+                      margin: "10px",
+                      borderRadius: "2px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    <span>{tag}</span>
+                  </div>
+                ))}
               </Paper>
               {/* for adding vendor */}
               <Typography>Vendor</Typography>
