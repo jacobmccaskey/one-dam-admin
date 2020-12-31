@@ -33,7 +33,7 @@ export default function NavBar() {
             <Link to="/" className={classes.button}>
               <Button variant="contained">Store</Button>
             </Link>
-            <Link to="/orders" className={classes.button}>
+            <Link to="/orders/recent" className={classes.button}>
               <Button variant="contained">orders</Button>
             </Link>
             <Link to="/vendors" className={classes.button}>
