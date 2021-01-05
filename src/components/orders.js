@@ -163,10 +163,7 @@ export default function Orders(props) {
               <Typography variant="h6">Customer</Typography>
               <hr />
               <Typography>
-                <span>{order.name}</span>
-
                 <a href={`mailto:${order.email}`}>{order.email}</a>
-                <span>{order.name}</span>
                 <span
                   style={
                     order.guest === true
@@ -177,6 +174,7 @@ export default function Orders(props) {
                   Guest
                 </span>
               </Typography>
+              <Typography>{order.name}</Typography>
               <Typography variant="h6">Shipping</Typography>
               <hr />
               <Typography>
@@ -187,11 +185,11 @@ export default function Orders(props) {
               </Typography>
             </Box>
             <Box className={classes.orderBox}>
-              <Typography variant="h6">Amount</Typography>
-              <hr />
-              <Typography style={{ fontSize: "22px" }}>
-                ${order.amount}
+              <Typography variant="h6">
+                Amount: ${order.amount.toFixed(2)}
               </Typography>
+              <hr />
+
               <Typography>
                 Status:{" "}
                 {order.paid === true
@@ -206,48 +204,50 @@ export default function Orders(props) {
                 <Typography key={uid()}>
                   <span style={{ fontWeight: "bold" }}>{item.quantity} </span>
                   {item.price_data.product_data.name} $
-                  {convertToRealNumber(item.price_data.unit_amount)}
+                  {convertToRealNumber(item.price_data.unit_amount).toFixed(2)}
                 </Typography>
               ))}
             </Box>
-            <Button
-              variant="contained"
-              onClick={() => deleteOrder(order._id)}
-              className={classes.btn}
-            >
-              Delete
-            </Button>
-            <Box
-              style={
-                order.shipped === true
-                  ? { display: "none" }
-                  : { display: "inherit" }
-              }
-            >
+            <div style={{ display: "inline" }}>
               <Button
                 variant="contained"
+                onClick={() => deleteOrder(order._id)}
                 className={classes.btn}
-                onClick={() => moveOrderToShipped(order._id)}
               >
-                Ship
+                Delete
               </Button>
-            </Box>
-            <Box
-              style={
-                order.returned === true
-                  ? { display: "none" }
-                  : { display: "inherit" }
-              }
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.btn}
-                onClick={() => moveOrderToReturned(order._id)}
+              <Box
+                style={
+                  order.shipped === true
+                    ? { display: "none" }
+                    : { display: "inherit" }
+                }
               >
-                Return
-              </Button>
-            </Box>
+                <Button
+                  variant="contained"
+                  className={classes.btn}
+                  onClick={() => moveOrderToShipped(order._id)}
+                >
+                  Ship
+                </Button>
+              </Box>
+              <Box
+                style={
+                  order.returned === true
+                    ? { display: "none" }
+                    : { display: "inherit" }
+                }
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.btn}
+                  onClick={() => moveOrderToReturned(order._id)}
+                >
+                  Return
+                </Button>
+              </Box>
+            </div>
           </Paper>
         ))}
       </div>
