@@ -56,7 +56,7 @@ export default function AddItem(props) {
   // const [quantityInputForTag, setQuantity] = useState(0);
 
   //hook for opening menu.
-  const [openMenu, setOpenMenu] = useState(false);
+  // const [openMenu, setOpenMenu] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
@@ -137,12 +137,12 @@ export default function AddItem(props) {
 
   const pickGender = (gender) => {
     setGender(gender);
-    setOpenMenu(false);
+    // setOpenMenu(false);
     setAnchorEl(null);
   };
 
   const genderMenu = (e) => {
-    setOpenMenu(true);
+    // setOpenMenu(true);
     setAnchorEl(e.currentTarget);
   };
 

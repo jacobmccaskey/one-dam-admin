@@ -64,8 +64,8 @@ export const checkCookie = (authorize, setAccessToken) => {
 };
 
 export function logout(authorize, setAccessToken) {
-  document.cookie = "token=;max-age=0";
-  document.cookie = "admin=;max-age=0";
+  document.cookie = "token=;Expires/Max-Age=0";
+  document.cookie = "admin=;Expires/Max-Age=0";
   authorize(null);
   setAccessToken(null);
 }

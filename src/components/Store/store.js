@@ -5,7 +5,7 @@ import ItemAccordian from "./ItemAccordian";
 import Container from "@material-ui/core/Container";
 import { Button } from "@material-ui/core";
 import { handleDelete, handleEdit } from "./storeFunctions";
-import { useAlert } from "react-alert";
+// import { useAlert } from "react-alert";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
 export default function Store(props) {
   const [inventory, setInventory] = useState([]);
   const classes = useStyles();
-  const alert = useAlert();
+  // const alert = useAlert();
 
   const populateStore = useCallback(() => {
     fetch(process.env.REACT_APP_INVENTORY, {

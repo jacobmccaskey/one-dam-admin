@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import NavBar from "./navigation/navbar";
+import Users from "./Users";
 const AddItem = lazy(() => import("./Store/addItem"));
 const Store = lazy(() => import("./Store/store"));
 const Orders = lazy(() => import("./orders"));
@@ -20,6 +21,7 @@ export default function Admin(props) {
             <Route path="/Vendors" render={() => <Vendors />} />
             <Route path="/orders/:param" render={() => <Orders {...props} />} />
             <Route path="/profile" render={() => <Profile />} />
+            <Route path="/users" render={() => <Users {...props} />} />
             <Route
               path="/addItem/:productId"
               render={() => <AddItem {...props} />}

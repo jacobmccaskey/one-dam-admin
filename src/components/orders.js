@@ -4,7 +4,7 @@ import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { useParams, Link } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import uid from "uid";
 
