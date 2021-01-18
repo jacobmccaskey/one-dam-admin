@@ -13,7 +13,7 @@ const s3 = new AWS.S3({
 const uploadFileToS3 = (file) => {
   if (file !== "") {
     const params = {
-      Bucket: "one-dam",
+      Bucket: "one-dam-2020",
       ContentType: "image/*",
       Key: `${file.name}`,
       Body: file,
@@ -38,7 +38,7 @@ const deleteFileFromS3 = (fileArray) => {
     if (file !== null) {
       s3.deleteObject(
         {
-          Bucket: "one-dam",
+          Bucket: "one-dam-2020",
           Key: `${file.Key}`,
         },
         (err, result) => {
