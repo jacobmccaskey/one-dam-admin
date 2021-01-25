@@ -2,6 +2,7 @@
 import axios from "axios";
 // import validator from "validator";
 import AWS from "aws-sdk";
+import { v4 as uuid } from "uuid";
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.REACT_APP_AWSID,
@@ -15,7 +16,7 @@ const uploadFileToS3 = (file) => {
     const params = {
       Bucket: "one-dam-2020",
       ContentType: "image/*",
-      Key: `${file.name}`,
+      Key: `${uuid()}`,
       Body: file,
       ACL: "public-read",
     };
