@@ -49,22 +49,24 @@ export default function ItemAccordian(props) {
   const [inputForInventory, setInputForInventory] = useState("none");
   const [stockNum, setStockNum] = useState(0);
   const handleViewStockInput = () => {
-    setInputForInventory("block");
+    // setInputForInventory("block");
+    props.setItemID(item._id);
+    props.setModal(true);
   };
   const replinishStock = () => {
-    setInputForInventory("none");
-    Axios({
-      method: "put",
-      url: process.env.REACT_APP_REPLINISH_ITEM,
-      headers: {
-        "x-access-token": accessToken,
-      },
-      data: {
-        id: item._id,
-        quantity: stockNum,
-      },
-    }).then((res) => window.location.reload());
-    // setStockNum(0);
+    // setInputForInventory("none");
+    // Axios({
+    //   method: "put",
+    //   url: process.env.REACT_APP_REPLINISH_ITEM,
+    //   headers: {
+    //     "x-access-token": accessToken,
+    //   },
+    //   data: {
+    //     id: item._id,
+    //     quantity: stockNum,
+    //   },
+    // }).then((res) => window.location.reload());
+    // // setStockNum(0);
   };
   const classes = useStyles();
 

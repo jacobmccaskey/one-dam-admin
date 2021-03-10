@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Auth } from "../context/Auth";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,6 +12,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
+import { useAlert } from "react-alert";
 import { makeStyles } from "@material-ui/core/styles";
 import NasaPhoto from "../images/nasa.jpg";
 
@@ -61,8 +63,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login(props) {
+function emailIsValid(email) {
+  return /\S+@\S+\.\S+/.test(email);
+}
+
+export default function Login() {
   const classes = useStyles();
+  const context = useContext(Auth);
+  const alert = useAlert();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const emailCheck = emailIsValid(context.username);
+    if (emailCheck === false) {
+      return alert.show("please enter in a valid email");
+    }
+    context.validateCredentials();
+  };
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -82,23 +99,20 @@ export default function Login(props) {
             <hr />
             oneDAM Admin
           </Typography>
-          <form
-            className={classes.form}
-            noValidate
-            onSubmit={props.validateCredentials}
-          >
+          <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
               id="email"
+              type="email"
               label="Email Address"
               name="email"
               autoComplete="email"
               autoFocus
-              onChange={(e) => props.userVal(e.target.value)}
-              value={props.username}
+              onChange={(e) => context.userVal(e.target.value)}
+              value={context.username}
             />
             <TextField
               variant="outlined"
@@ -110,8 +124,8 @@ export default function Login(props) {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e) => props.secretVal(e.target.value)}
-              value={props.password}
+              onChange={(e) => context.secretVal(e.target.value)}
+              value={context.password}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

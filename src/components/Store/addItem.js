@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { StoreContext } from "../../context/Store";
+import { Auth } from "../../context/Auth";
 import { Redirect } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
@@ -11,7 +13,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Link, useParams } from "react-router-dom";
-import { addItemToInventory } from "./storeFunctions";
 import uid from "uid";
 import { useStyles } from "./styles";
 import { useAlert } from "react-alert";
@@ -23,9 +24,11 @@ import axios from "axios";
 //add endpoint to API
 const vendors = [{ name: "oneDAM" }];
 
-export default function AddItem(props) {
+export default function AddItem() {
   const { productId } = useParams();
   const [name, setName] = useState("");
+  const { addItemToInventory } = useContext(StoreContext);
+  const { accessToken } = useContext(Auth);
   const [uploadMultiplePhotos, setUploadMultiplePhotos] = useState(false);
   const [price, setPrice] = useState(0.0);
   const [description, setDescription] = useState("");
@@ -115,7 +118,7 @@ export default function AddItem(props) {
     ];
     addItemToInventory(
       imageArray,
-      props.accessToken,
+      accessToken,
       name,
       price,
       description,

@@ -14,7 +14,7 @@ const s3 = new AWS.S3({
 const uploadFileToS3 = (file) => {
   if (file !== "") {
     const params = {
-      Bucket: "one-dam-2020",
+      Bucket: process.env.REACT_APP_S3_BUCKET || "one-dam-2020",
       ContentType: "image/*",
       Key: `${uuid()}`,
       Body: file,

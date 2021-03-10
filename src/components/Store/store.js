@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import ItemAccordian from "./ItemAccordian";
 import Container from "@material-ui/core/Container";
 import { Button } from "@material-ui/core";
-import { handleDelete, handleEdit } from "./storeFunctions";
+import EditModal from "./EditModal";
+import { StoreContext } from "../../context/Store";
+import { Auth } from "../../context/Auth";
+// import { handleDelete, handleEdit } from "./storeFunctions";
 // import { useAlert } from "react-alert";
 
 const useStyles = makeStyles(() => ({
@@ -21,22 +24,26 @@ const useStyles = makeStyles(() => ({
 
 export default function Store(props) {
   const [inventory, setInventory] = useState([]);
+  const [itemID, setItemID] = useState(null);
+  const [modal, setModal] = useState(false);
   const classes = useStyles();
   // const alert = useAlert();
+  const { handleDelete, handleEdit } = useContext(StoreContext);
+  const { accessToken, setUser } = useContext(Auth);
 
   const populateStore = useCallback(() => {
     fetch(process.env.REACT_APP_INVENTORY, {
       method: "GET",
       headers: {
-        "x-access-token": `${props.accessToken}`,
+        "x-access-token": `${accessToken}`,
       },
     })
       .then((response) => response.json())
       .then((data) => {
-        data.admin === false ? props.authorize(null) : setInventory(data);
+        data.admin === false ? setUser(null) : setInventory(data);
       })
       .catch((err) => console.error(err));
-  }, [props]);
+  }, [accessToken, setUser]);
 
   useEffect(() => {
     populateStore();
@@ -55,12 +62,15 @@ export default function Store(props) {
             item={item}
             key={item._id}
             populateStore={populateStore}
-            accessToken={props.accessToken}
+            accessToken={accessToken}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
+            setModal={setModal}
+            setItemID={setItemID}
           />
         ))}
       </Container>
+      <EditModal modal={modal} itemID={itemID} setModal={setModal} />
     </div>
   );
 }
