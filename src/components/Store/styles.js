@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 export const useStyles = makeStyles((theme) => ({
   container: {
     display: "relative",
+    textAlign: "center",
     marginTop: "5rem",
     marginBottom: "5rem",
   },
@@ -70,12 +71,14 @@ export const useStyles = makeStyles((theme) => ({
     padding: "0.5rem",
   },
   wrapperAddItem: {
-    width: "70%",
+    width: "50%",
+    // textAlign: "center",
+    margin: "auto",
     border: "grey",
     borderRadius: "2px",
-    [theme.breakpoints.up("lg")]: {
-      width: "50%",
-    },
+    // [theme.breakpoints.up("lg")]: {
+    //   width: "50%",
+    // },
     [theme.breakpoints.down("sm")]: {
       width: "90%",
     },

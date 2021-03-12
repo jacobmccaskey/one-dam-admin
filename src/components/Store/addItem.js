@@ -20,6 +20,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import MultipleImageUpload from "./MultipleImageUpload";
 import Box from "@material-ui/core/Box";
 import axios from "axios";
+import ImageUploader from "./ImageUploader";
 
 //add endpoint to API
 const vendors = [{ name: "oneDAM" }];
@@ -53,6 +54,7 @@ export default function AddItem() {
   const [imageFour, setImageFour] = useState("");
   const [imageFive, setImageFive] = useState("");
   const [imageSix, setImageSix] = useState("");
+  const [images, setImages] = useState([]);
 
   //for making tags and pushing to sizes array and totalQuantity
   const [sizeInputForTag, setSizeInput] = useState("");
@@ -180,29 +182,37 @@ export default function AddItem() {
           <Container className={classes.container}>
             <form onSubmit={(e) => submitForm(e)}>
               <div style={{ padding: "1rem" }}>
-                <Typography className={classes.text}>Name</Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  className={classes.marginBottom}
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
-                ></TextField>
+                <div style={{ textAlign: "left" }}>
+                  <Typography>Name</Typography>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    className={classes.marginBottom}
+                    style={{ width: "50%" }}
+                    multiline
+                    onChange={(e) => setName(e.target.value)}
+                    value={name}
+                  ></TextField>
 
-                <Typography>Description</Typography>
-                <TextField
-                  className={classes.marginBottom}
-                  style={{ minHeight: "5rem" }}
-                  variant="filled"
-                  size="small"
-                  multiline
-                  onChange={(e) => setDescription(e.target.value)}
-                  value={description}
-                ></TextField>
+                  <Typography>Description</Typography>
+                  <TextField
+                    className={classes.marginBottom}
+                    id="item-description"
+                    // style={{ minHeight: 100 }}
+                    size="small"
+                    multiline
+                    rows={5}
+                    variant="outlined"
+                    onChange={(e) => setDescription(e.target.value)}
+                    value={description}
+                  />
+                </div>
               </div>
+
               <Box m={2} />
+              <ImageUploader setImages={setImages} images={images} />
               {/* for uploading photos */}
-              <div style={{ width: "50%" }}>
+              {/* <div style={{ width: "50%" }}>
                 <Typography>Images (***upload main image first)</Typography>
                 <span>1: </span>
                 <Input
@@ -235,7 +245,7 @@ export default function AddItem() {
                   />
                 )}
                 <br />
-              </div>
+              </div> */}
               {/* Gender Picker */}
               <div
                 style={{

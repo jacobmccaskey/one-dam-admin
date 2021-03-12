@@ -13,6 +13,7 @@
     "cloudinary-react": "^1.6.8",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
+    "material-ui-dropzone": "^3.5.0",
     "react": "^16.13.1",
     "react-alert": "^7.0.2",
     "react-alert-template-mui": "^1.0.7",
