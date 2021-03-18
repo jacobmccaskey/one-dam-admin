@@ -3,6 +3,8 @@ import Input from "@material-ui/core/Input";
 import uid from "uid";
 import { useStyles } from "./styles";
 
+// component no longer being used..
+
 export default function MultipleImageUpload(props) {
   const {
     setImageTwo,

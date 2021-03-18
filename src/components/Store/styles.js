@@ -18,8 +18,8 @@ export const useStyles = makeStyles((theme) => ({
   },
   sizeTag: {
     // backgroundColor: "lightgrey",
+    border: "0.5px solid lightgrey",
 
-    borderRadius: "4px",
     // width: "4rem",
     display: "inline-block",
     margin: theme.spacing(1),
@@ -34,8 +34,8 @@ export const useStyles = makeStyles((theme) => ({
     verticalAlign: "center",
     borderRadius: "20%",
     "&:hover": {
-      backgroundColor: "black",
-      color: "white",
+      // backgroundColor: "black",
+      color: "red",
     },
   },
   divContainerForItemSize: {
@@ -47,6 +47,7 @@ export const useStyles = makeStyles((theme) => ({
   input: {
     marginRight: "1rem",
     marginTop: "10px",
+    // height: "36px",
   },
   newItemBtn: {
     width: "60%",

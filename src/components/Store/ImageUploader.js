@@ -6,7 +6,7 @@ import { DropzoneArea } from "material-ui-dropzone";
 export default function ImageUploader(props) {
   const { images, setImages } = props;
   const upload = (file) => {
-    setImages((prevState) => [...prevState, file]);
+    setImages(file);
     console.log(images);
   };
 
