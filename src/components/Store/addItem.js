@@ -10,26 +10,35 @@ import Button from "@material-ui/core/Button";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+// import Menu from "@material-ui/core/Menu";
+// import MenuItem from "@material-ui/core/MenuItem";
 import { Link, useParams } from "react-router-dom";
 import uid from "uid";
 import { useStyles } from "./styles";
 import { useAlert } from "react-alert";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import MultipleImageUpload from "./MultipleImageUpload";
+// import MultipleImageUpload from "./MultipleImageUpload";
 import Box from "@material-ui/core/Box";
 import axios from "axios";
+import ImageUploader from "./ImageUploader";
+import Select from "react-select";
+// import CreatableSelect from "react-select/creatable";
 
 //add endpoint to API
-const vendors = [{ name: "oneDAM" }];
+const vendors = [{ value: "oneDAM", label: "oneDAM" }];
+
+const genderOptions = [
+  { value: "male", label: "male" },
+  { value: "female", label: "female" },
+  { value: "unisex", label: "unisex" },
+];
 
 export default function AddItem() {
   const { productId } = useParams();
   const [name, setName] = useState("");
   const { addItemToInventory } = useContext(StoreContext);
   const { accessToken } = useContext(Auth);
-  const [uploadMultiplePhotos, setUploadMultiplePhotos] = useState(false);
+  // const [uploadMultiplePhotos, setUploadMultiplePhotos] = useState(false);
   const [price, setPrice] = useState(0.0);
   const [description, setDescription] = useState("");
   const [totalQuantity, setTotalQuantity] = useState(0);
@@ -47,12 +56,13 @@ export default function AddItem() {
   const [redirectToHome, setRedirect] = useState(false);
 
   //hooks for individual images
-  const [imageOne, setImageOne] = useState("");
-  const [imageTwo, setImageTwo] = useState("");
-  const [imageThree, setImageThree] = useState("");
-  const [imageFour, setImageFour] = useState("");
-  const [imageFive, setImageFive] = useState("");
-  const [imageSix, setImageSix] = useState("");
+  // const [imageOne, setImageOne] = useState("");
+  // const [imageTwo, setImageTwo] = useState("");
+  // const [imageThree, setImageThree] = useState("");
+  // const [imageFour, setImageFour] = useState("");
+  // const [imageFive, setImageFive] = useState("");
+  // const [imageSix, setImageSix] = useState("");
+  const [images, setImages] = useState([]);
 
   //for making tags and pushing to sizes array and totalQuantity
   const [sizeInputForTag, setSizeInput] = useState("");
@@ -63,8 +73,6 @@ export default function AddItem() {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
-
-  const genders = ["male", "female", "unisex"];
 
   function addSizeVariant() {
     setVariant((prevState) => [
@@ -80,6 +88,9 @@ export default function AddItem() {
   }
 
   function addProductVariation() {
+    addSizeVariant();
+    setVariantColor("");
+    setVariantQuantity(0);
     let totalCount = 0;
     variant.forEach((item) => (totalCount += Number(item.quantity)));
     setSizes((prevState) => [
@@ -108,16 +119,16 @@ export default function AddItem() {
   const submitForm = (e) => {
     e.preventDefault();
 
-    const imageArray = [
-      imageOne,
-      imageTwo,
-      imageThree,
-      imageFour,
-      imageFive,
-      imageSix,
-    ];
+    // const imageArray = [
+    //   imageOne,
+    //   imageTwo,
+    //   imageThree,
+    //   imageFour,
+    //   imageFive,
+    //   imageSix,
+    // ];
     addItemToInventory(
-      imageArray,
+      images,
       accessToken,
       name,
       price,
@@ -140,14 +151,15 @@ export default function AddItem() {
 
   const pickGender = (gender) => {
     setGender(gender);
+    console.log(gender);
     // setOpenMenu(false);
     setAnchorEl(null);
   };
 
-  const genderMenu = (e) => {
-    // setOpenMenu(true);
-    setAnchorEl(e.currentTarget);
-  };
+  // const genderMenu = (e) => {
+  //   // setOpenMenu(true);
+  //   setAnchorEl(e.currentTarget);
+  // };
 
   // useEffect(() => {
   //   let count = 0;
@@ -180,94 +192,101 @@ export default function AddItem() {
           <Container className={classes.container}>
             <form onSubmit={(e) => submitForm(e)}>
               <div style={{ padding: "1rem" }}>
-                <Typography className={classes.text}>Name</Typography>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  className={classes.marginBottom}
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
-                ></TextField>
-
-                <Typography>Description</Typography>
-                <TextField
-                  className={classes.marginBottom}
-                  style={{ minHeight: "5rem" }}
-                  variant="filled"
-                  size="small"
-                  multiline
-                  onChange={(e) => setDescription(e.target.value)}
-                  value={description}
-                ></TextField>
-              </div>
-              <Box m={2} />
-              {/* for uploading photos */}
-              <div style={{ width: "50%" }}>
-                <Typography>Images (***upload main image first)</Typography>
-                <span>1: </span>
-                <Input
-                  className={classes.marginBottom}
-                  variant="outlined"
-                  size="small"
-                  type="file"
-                  accept="image/*"
-                  name={uid()}
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    setImageOne(file);
-                  }}
-                />
-                {uploadMultiplePhotos === false ? (
-                  <Button
+                <div style={{ textAlign: "left" }}>
+                  <Typography>Name</Typography>
+                  <TextField
                     variant="outlined"
-                    color="primary"
-                    onClick={() => setUploadMultiplePhotos(true)}
-                  >
-                    add more
-                  </Button>
-                ) : (
-                  <MultipleImageUpload
-                    setImageTwo={setImageTwo}
-                    setImageThree={setImageThree}
-                    setImageFour={setImageFour}
-                    setImageFive={setImageFive}
-                    setImageSix={setImageSix}
+                    size="small"
+                    className={classes.marginBottom}
+                    style={{ width: "50%" }}
+                    multiline
+                    onChange={(e) => setName(e.target.value)}
+                    value={name}
+                  ></TextField>
+
+                  <Typography>Description</Typography>
+                  <TextField
+                    className={classes.marginBottom}
+                    id="item-description"
+                    // style={{ minHeight: 100 }}
+                    size="small"
+                    multiline
+                    rows={5}
+                    variant="outlined"
+                    onChange={(e) => setDescription(e.target.value)}
+                    value={description}
                   />
-                )}
-                <br />
+                  <div style={{ display: "block" }}>
+                    <div style={{ display: "block", width: "180px" }}>
+                      <InputLabel>Amount</InputLabel>
+                      <Input
+                        className={classes.marginBottom}
+                        // style={{ minWidth: "6rem", width: "20%" }}
+                        variant="outlined"
+                        type="number"
+                        name="price"
+                        startAdornment={
+                          <InputAdornment position="start">$</InputAdornment>
+                        }
+                        onChange={(e) => setPrice(e.target.value)}
+                        value={price}
+                      />
+                    </div>
+                    <div style={{ display: "flex" }}>
+                      <div
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          paddingRight: "1rem",
+                        }}
+                      >
+                        <InputLabel>Gender</InputLabel>
+                        <Select
+                          className="basic-single"
+                          isRtl={true}
+                          options={genderOptions}
+                          onChange={(gender) => pickGender(gender.value)}
+                          name="gender"
+                        />
+                      </div>
+
+                      <div style={{ display: "block", width: "100%" }}>
+                        <InputLabel>Vendor</InputLabel>
+                        <Select
+                          className="basic-single"
+                          isRtl={true}
+                          options={vendors}
+                          onChange={(e) => setVendor(e.value)}
+                          name="gender"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              {/* Gender Picker */}
-              <div
+
+              <Box m={2} />
+
+              <ImageUploader setImages={setImages} images={images} />
+
+              {/* inventory input for sizes and colors */}
+              <Paper
                 style={{
+                  padding: "0.5rem",
+                  marginBottom: "0.5rem",
                   textAlign: "left",
-                  display: "inline-block",
-                  width: "80%",
-                  margin: "2rem",
                 }}
               >
-                <Button
-                  className={classes.genderBtn}
-                  onClick={(e) => genderMenu(e)}
-                >
-                  {" "}
-                  Pick Gender
-                </Button>
-                <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)}>
-                  {genders.map((gender) => (
-                    <MenuItem onClick={() => pickGender(gender)} key={gender}>
-                      {gender}
-                    </MenuItem>
-                  ))}
-                </Menu>
-                <Typography className={classes.genderView}>{gender}</Typography>
-              </div>
-              {/* inventory input for sizes and colors */}
-              <Paper style={{ padding: "0.5rem", marginBottom: "0.5rem" }}>
                 <Typography>Inventory</Typography>
                 <div style={{ textAlign: "left" }}>
                   {sizes.map((tag) => (
                     <Typography
-                      style={{ backgroundColor: "grey", color: "white" }}
+                      style={{
+                        // backgroundColor: "white",
+                        color: "grey",
+                        verticalAlign: "middle",
+                        height: "36px",
+                      }}
                       className={classes.sizeTag}
                       variant="body1"
                       key={tag.id}
@@ -275,16 +294,16 @@ export default function AddItem() {
                       {tag.size}
                       <button
                         className={classes.tagButton}
-                        style={{
-                          backgroundColor: tag.color,
-                          color: "white",
-                          height: "100%",
-                        }}
+                        // style={{
+                        //   // backgroundColor: tag.color,
+                        //   // color: "white",
+                        //   height: "90%",
+                        // }}
                         key={tag.id}
                         value={tag}
                         onClick={() => removeProductSize(tag)}
                       >
-                        <DeleteForeverIcon />
+                        <DeleteForeverIcon color="inherit" fontSize="small" />
                       </button>
                     </Typography>
                   ))}
@@ -297,6 +316,7 @@ export default function AddItem() {
                   <TextField
                     type="text"
                     label="size"
+                    size="small"
                     className={classes.input}
                     variant="outlined"
                     onChange={(e) => setSizeInput(e.target.value)}
@@ -306,6 +326,7 @@ export default function AddItem() {
                   <TextField
                     type="number"
                     label="quantity"
+                    size="small"
                     className={classes.input}
                     variant="outlined"
                     onChange={(e) => setVariantQuantity(Number(e.target.value))}
@@ -314,12 +335,13 @@ export default function AddItem() {
                   <TextField
                     type="text"
                     label="color"
+                    size="small"
                     className={classes.input}
                     variant="outlined"
                     onChange={(e) => setVariantColor(e.target.value)}
                     value={variantColor}
                   />
-                  <Button
+                  {/* <Button
                     onClick={() => {
                       addSizeVariant();
                       setVariantColor("");
@@ -328,7 +350,7 @@ export default function AddItem() {
                     style={{ verticalAlign: "center" }}
                   >
                     add variant
-                  </Button>
+                  </Button> */}
                   <br />
                   {variant.map((type) => (
                     <div className={classes.variantBox} key={type.color}>
@@ -344,33 +366,56 @@ export default function AddItem() {
                   </Button>
                 </div>
               </Paper>
-              <Paper style={{ padding: "0.5rem", marginBottom: "0.5rem" }}>
+              <Paper
+                style={{
+                  padding: "0.5rem",
+                  marginBottom: "0.5rem",
+                  textAlign: "left",
+                }}
+              >
                 <Typography>Product Tags</Typography>
+                {/* <CreatableSelect
+                  isClearable
+                  onChange={(e) => setTagInput(e.target.value)}
+                  options={tags}
+                /> */}
                 <TextField
                   type="text"
                   label="tags"
                   variant="outlined"
+                  size="small"
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13) {
+                      pushToTagArray();
+                    }
+                  }}
                   onChange={(e) => setTagInput(e.target.value)}
                   value={tagInput}
                   // onEnter={pushToTagArray}
                 />
-                <Button onClick={pushToTagArray}>
+                {/* <Button onClick={pushToTagArray}>
                   <Typography>Add</Typography>
-                </Button>
-                {tags.map((tag) => (
-                  <div
-                    style={{
-                      margin: "10px",
-                      borderRadius: "2px",
-                      fontSize: "16px",
-                    }}
-                  >
-                    <span>{tag}</span>
-                  </div>
-                ))}
+                </Button> */}
+                <div style={{ display: "inline" }}>
+                  {tags.map((tag) => (
+                    <div
+                      style={{
+                        margin: "5px",
+                        padding: "5px",
+                        borderRadius: "2px",
+                        backgroundColor: "lightblue",
+                        display: "inline",
+                        height: "36px",
+                        fontSize: "16px",
+                      }}
+                    >
+                      <span>{tag}</span>
+                    </div>
+                  ))}
+                </div>
               </Paper>
               {/* for adding vendor */}
-              <Typography>Vendor</Typography>
+              {/* <Typography>Vendor</Typography>
               <TextField
                 className={classes.marginBottom}
                 style={{ width: "30%" }}
@@ -386,9 +431,9 @@ export default function AddItem() {
                     {vendor.name}
                   </MenuItem>
                 ))}
-              </TextField>
+              </TextField> */}
 
-              <InputLabel>Amount</InputLabel>
+              {/* <InputLabel>Amount</InputLabel>
               <Input
                 className={classes.marginBottom}
                 type="number"
@@ -398,7 +443,7 @@ export default function AddItem() {
                 }
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
-              ></Input>
+              ></Input> */}
               <br />
               <Typography className={classes.text}>
                 Quantity: {totalQuantity}
