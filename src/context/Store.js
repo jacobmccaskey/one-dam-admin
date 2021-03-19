@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import AWS from "aws-sdk";
 import { v4 as uuid } from "uuid";
-import { useAlert } from "react-alert";
+// import { useAlert } from "react-alert";
 
 export const StoreContext = React.createContext();
 
 export default function StoreManager({ children }) {
-  const alert = useAlert();
+  // const alert = useAlert();
   const s3 = new AWS.S3({
     accessKeyId: process.env.REACT_APP_AWSID,
     secretAccessKey: process.env.REACT_APP_AWSKEY,

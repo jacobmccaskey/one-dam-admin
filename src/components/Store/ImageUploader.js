@@ -1,4 +1,4 @@
-import React, { useDebugValue } from "react";
+import React from "react";
 import { DropzoneArea } from "material-ui-dropzone";
 
 // https://www.npmjs.com/package/material-ui-dropzone

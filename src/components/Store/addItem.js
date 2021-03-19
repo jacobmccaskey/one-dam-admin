@@ -10,19 +10,19 @@ import Button from "@material-ui/core/Button";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+// import Menu from "@material-ui/core/Menu";
+// import MenuItem from "@material-ui/core/MenuItem";
 import { Link, useParams } from "react-router-dom";
 import uid from "uid";
 import { useStyles } from "./styles";
 import { useAlert } from "react-alert";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import MultipleImageUpload from "./MultipleImageUpload";
+// import MultipleImageUpload from "./MultipleImageUpload";
 import Box from "@material-ui/core/Box";
 import axios from "axios";
 import ImageUploader from "./ImageUploader";
 import Select from "react-select";
-import CreatableSelect from "react-select/creatable";
+// import CreatableSelect from "react-select/creatable";
 
 //add endpoint to API
 const vendors = [{ value: "oneDAM", label: "oneDAM" }];
@@ -156,10 +156,10 @@ export default function AddItem() {
     setAnchorEl(null);
   };
 
-  const genderMenu = (e) => {
-    // setOpenMenu(true);
-    setAnchorEl(e.currentTarget);
-  };
+  // const genderMenu = (e) => {
+  //   // setOpenMenu(true);
+  //   setAnchorEl(e.currentTarget);
+  // };
 
   // useEffect(() => {
   //   let count = 0;
@@ -385,7 +385,7 @@ export default function AddItem() {
                   variant="outlined"
                   size="small"
                   onKeyDown={(e) => {
-                    if (e.keyCode == 13) {
+                    if (e.keyCode === 13) {
                       pushToTagArray();
                     }
                   }}
