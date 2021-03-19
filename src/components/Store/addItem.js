@@ -70,7 +70,7 @@ export default function AddItem() {
 
   //hook for opening menu.
   // const [openMenu, setOpenMenu] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
 
@@ -153,7 +153,7 @@ export default function AddItem() {
     setGender(gender);
     console.log(gender);
     // setOpenMenu(false);
-    setAnchorEl(null);
+    // setAnchorEl(null);
   };
 
   // const genderMenu = (e) => {

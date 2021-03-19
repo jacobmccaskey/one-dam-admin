@@ -49,7 +49,7 @@ export default function ItemAccordian(props) {
   const [inputForInventory, setInputForInventory] = useState("none");
   const [stockNum, setStockNum] = useState(0);
   const handleViewStockInput = () => {
-    // setInputForInventory("block");
+    setInputForInventory("block");
     props.setItemID(item._id);
     props.setModal(true);
   };
