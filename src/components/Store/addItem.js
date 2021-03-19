@@ -374,34 +374,45 @@ export default function AddItem() {
                 }}
               >
                 <Typography>Product Tags</Typography>
-                <CreatableSelect
+                {/* <CreatableSelect
                   isClearable
                   onChange={(e) => setTagInput(e.target.value)}
-                  value={tagInput}
-                />
-                {/* <TextField
+                  options={tags}
+                /> */}
+                <TextField
                   type="text"
                   label="tags"
                   variant="outlined"
+                  size="small"
+                  onKeyDown={(e) => {
+                    if (e.keyCode == 13) {
+                      pushToTagArray();
+                    }
+                  }}
                   onChange={(e) => setTagInput(e.target.value)}
                   value={tagInput}
                   // onEnter={pushToTagArray}
                 />
-                <Button onClick={pushToTagArray}>
+                {/* <Button onClick={pushToTagArray}>
                   <Typography>Add</Typography>
-                </Button>
-                {tags.map((tag) => (
-                  <div
-                    style={{
-                      margin: "10px",
-                      borderRadius: "2px",
-                      height: "36px",
-                      fontSize: "16px",
-                    }}
-                  >
-                    <span>{tag}</span>
-                  </div>
-                ))} */}
+                </Button> */}
+                <div style={{ display: "inline" }}>
+                  {tags.map((tag) => (
+                    <div
+                      style={{
+                        margin: "5px",
+                        padding: "5px",
+                        borderRadius: "2px",
+                        backgroundColor: "lightblue",
+                        display: "inline",
+                        height: "36px",
+                        fontSize: "16px",
+                      }}
+                    >
+                      <span>{tag}</span>
+                    </div>
+                  ))}
+                </div>
               </Paper>
               {/* for adding vendor */}
               {/* <Typography>Vendor</Typography>
