@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAlert } from "react-alert";
 export const Auth = React.createContext();
 
@@ -59,7 +59,7 @@ export default function AuthManager({ children }) {
     }
   };
 
-  const checkCookie = (authorize, setAccessToken) => {
+  const checkCookie = useCallback((authorize, setAccessToken) => {
     let token = getCookie("one-dam-admin-token");
     // if (!token) {
     //   return authorize(null);
@@ -83,7 +83,7 @@ export default function AuthManager({ children }) {
           setAccessToken(token);
         }
       });
-  };
+  }, []);
 
   function logout(authorize, setAccessToken) {
     document.cookie = "one-dam-admin-token=;Expires/Max-Age=0";
@@ -116,7 +116,7 @@ export default function AuthManager({ children }) {
     if (admin === null) {
       checkCookie(setAdmin, setAccessToken);
     }
-  }, [admin]);
+  }, [admin, checkCookie]);
 
   return (
     <Auth.Provider
