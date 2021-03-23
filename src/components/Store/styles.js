@@ -18,7 +18,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   sizeTag: {
     // backgroundColor: "lightgrey",
-    border: "0.5px solid lightgrey",
+    // border: "0.5px solid lightgrey",
 
     // width: "4rem",
     display: "inline-block",
@@ -27,12 +27,12 @@ export const useStyles = makeStyles((theme) => ({
     fontWeight: 500,
   },
   tagButton: {
-    // backgroundColor: "gray",
+    backgroundColor: "lightblue",
     marginLeft: "4px",
     display: "inline",
     border: "none",
     verticalAlign: "center",
-    borderRadius: "20%",
+    // borderRadius: "20%",
     "&:hover": {
       // backgroundColor: "black",
       color: "red",
@@ -51,7 +51,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   newItemBtn: {
     width: "60%",
-    backgroundColor: "#0066b2",
+    backgroundColor: "lightblue",
     margin: theme.spacing(1),
     textTransform: "none",
     color: "black",

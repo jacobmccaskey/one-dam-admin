@@ -10,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
+import BackspaceIcon from "@material-ui/icons/Backspace";
 // import Menu from "@material-ui/core/Menu";
 // import MenuItem from "@material-ui/core/MenuItem";
 import { Link, useParams } from "react-router-dom";
@@ -117,7 +118,7 @@ export default function AddItem() {
   const alert = useAlert();
 
   const submitForm = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     // const imageArray = [
     //   imageOne,
@@ -147,6 +148,10 @@ export default function AddItem() {
     let tag = tagInput;
     setTags((prevState) => [...prevState, tag]);
     setTagInput("");
+  };
+
+  const deleteFromTagArray = (tag) => {
+    setTags((prevState) => prevState.filter((item) => item !== tag));
   };
 
   const pickGender = (gender) => {
@@ -184,164 +189,171 @@ export default function AddItem() {
     <React.Fragment>
       {!redirectToHome ? (
         <div className={classes.wrapperAddItem}>
-          <Link to="/" style={{ textDecoration: "none" }}>
+          {/* <Link to="/" style={{ textDecoration: "none" }}>
             <Button style={{ marginTop: "5rem", marginLeft: "1rem" }}>
               <Typography>{"<"}Back to home</Typography>
             </Button>
-          </Link>
+          </Link> */}
           <Container className={classes.container}>
-            <form onSubmit={(e) => submitForm(e)}>
-              <div style={{ padding: "1rem" }}>
-                <div style={{ textAlign: "left" }}>
-                  <Typography>Name</Typography>
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    className={classes.marginBottom}
-                    style={{ width: "50%" }}
-                    multiline
-                    onChange={(e) => setName(e.target.value)}
-                    value={name}
-                  ></TextField>
+            {/* <form onSubmit={(e) => submitForm(e)}> */}
+            <div style={{ padding: "1rem" }}>
+              <div style={{ textAlign: "left" }}>
+                <Typography>Name</Typography>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  className={classes.marginBottom}
+                  style={{ width: "50%" }}
+                  multiline
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                ></TextField>
 
-                  <Typography>Description</Typography>
-                  <TextField
-                    className={classes.marginBottom}
-                    id="item-description"
-                    // style={{ minHeight: 100 }}
-                    size="small"
-                    multiline
-                    rows={5}
-                    variant="outlined"
-                    onChange={(e) => setDescription(e.target.value)}
-                    value={description}
-                  />
-                  <div style={{ display: "block" }}>
-                    <div style={{ display: "block", width: "180px" }}>
-                      <InputLabel>Amount</InputLabel>
-                      <Input
-                        className={classes.marginBottom}
-                        // style={{ minWidth: "6rem", width: "20%" }}
-                        variant="outlined"
-                        type="number"
-                        name="price"
-                        startAdornment={
-                          <InputAdornment position="start">$</InputAdornment>
-                        }
-                        onChange={(e) => setPrice(e.target.value)}
-                        value={price}
+                <Typography>Description</Typography>
+                <TextField
+                  className={classes.marginBottom}
+                  id="item-description"
+                  // style={{ minHeight: 100 }}
+                  size="small"
+                  multiline
+                  rows={5}
+                  variant="outlined"
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                />
+                <div style={{ display: "block" }}>
+                  <div style={{ display: "block", width: "180px" }}>
+                    <InputLabel>Amount</InputLabel>
+                    <Input
+                      className={classes.marginBottom}
+                      // style={{ minWidth: "6rem", width: "20%" }}
+                      variant="outlined"
+                      type="number"
+                      name="price"
+                      startAdornment={
+                        <InputAdornment position="start">$</InputAdornment>
+                      }
+                      onChange={(e) => setPrice(e.target.value)}
+                      value={price}
+                    />
+                  </div>
+                  <div style={{ display: "flex" }}>
+                    <div
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        paddingRight: "1rem",
+                      }}
+                    >
+                      <InputLabel>Gender</InputLabel>
+                      <Select
+                        className="basic-single"
+                        isRtl={true}
+                        options={genderOptions}
+                        onChange={(gender) => pickGender(gender.value)}
+                        name="gender"
                       />
                     </div>
-                    <div style={{ display: "flex" }}>
-                      <div
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          paddingRight: "1rem",
-                        }}
-                      >
-                        <InputLabel>Gender</InputLabel>
-                        <Select
-                          className="basic-single"
-                          isRtl={true}
-                          options={genderOptions}
-                          onChange={(gender) => pickGender(gender.value)}
-                          name="gender"
-                        />
-                      </div>
 
-                      <div style={{ display: "block", width: "100%" }}>
-                        <InputLabel>Vendor</InputLabel>
-                        <Select
-                          className="basic-single"
-                          isRtl={true}
-                          options={vendors}
-                          onChange={(e) => setVendor(e.value)}
-                          name="gender"
-                        />
-                      </div>
+                    <div style={{ display: "block", width: "100%" }}>
+                      <InputLabel>Vendor</InputLabel>
+                      <Select
+                        className="basic-single"
+                        isRtl={true}
+                        options={vendors}
+                        onChange={(e) => setVendor(e.value)}
+                        name="gender"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <Box m={2} />
+            <Box m={2} />
 
-              <ImageUploader setImages={setImages} images={images} />
+            <ImageUploader setImages={setImages} images={images} />
 
-              {/* inventory input for sizes and colors */}
-              <Paper
-                style={{
-                  padding: "0.5rem",
-                  marginBottom: "0.5rem",
-                  textAlign: "left",
-                }}
-              >
-                <Typography>Inventory</Typography>
-                <div style={{ textAlign: "left" }}>
-                  {sizes.map((tag) => (
-                    <Typography
-                      style={{
-                        // backgroundColor: "white",
-                        color: "grey",
-                        verticalAlign: "middle",
-                        height: "36px",
-                      }}
-                      className={classes.sizeTag}
-                      variant="body1"
+            {/* inventory input for sizes and colors */}
+            <Paper
+              style={{
+                padding: "0.5rem",
+                marginBottom: "0.5rem",
+                textAlign: "left",
+              }}
+            >
+              <Typography>Inventory</Typography>
+              <div style={{ textAlign: "left" }}>
+                {sizes.map((tag) => (
+                  <Typography
+                    style={{
+                      backgroundColor: "lightblue",
+                      // color: "grey",
+                      verticalAlign: "middle",
+                      height: "36px",
+                    }}
+                    className={classes.sizeTag}
+                    variant="body1"
+                    key={tag.id}
+                  >
+                    {tag.size}
+                    <button
+                      className={classes.tagButton}
+                      // style={{
+                      //   // backgroundColor: tag.color,
+                      //   // color: "white",
+                      //   height: "90%",
+                      // }}
                       key={tag.id}
+                      value={tag}
+                      onClick={() => removeProductSize(tag)}
                     >
-                      {tag.size}
-                      <button
-                        className={classes.tagButton}
-                        // style={{
-                        //   // backgroundColor: tag.color,
-                        //   // color: "white",
-                        //   height: "90%",
-                        // }}
-                        key={tag.id}
-                        value={tag}
-                        onClick={() => removeProductSize(tag)}
-                      >
-                        <DeleteForeverIcon color="inherit" fontSize="small" />
-                      </button>
-                    </Typography>
-                  ))}
-                </div>
+                      <DeleteForeverIcon
+                        // color="inherit"
+                        fontSize="small"
+                        style={{
+                          backgroundColor: "lightblue",
+                          marginBottom: "-2px",
+                        }}
+                      />
+                    </button>
+                  </Typography>
+                ))}
+              </div>
 
-                <div
-                  style={{ borderRadius: "0px" }}
-                  className={classes.divContainerForItemSize}
-                >
-                  <TextField
-                    type="text"
-                    label="size"
-                    size="small"
-                    className={classes.input}
-                    variant="outlined"
-                    onChange={(e) => setSizeInput(e.target.value)}
-                    value={sizeInputForTag}
-                  />
-                  <br />
-                  <TextField
-                    type="number"
-                    label="quantity"
-                    size="small"
-                    className={classes.input}
-                    variant="outlined"
-                    onChange={(e) => setVariantQuantity(Number(e.target.value))}
-                    value={variantQuantity}
-                  />
-                  <TextField
-                    type="text"
-                    label="color"
-                    size="small"
-                    className={classes.input}
-                    variant="outlined"
-                    onChange={(e) => setVariantColor(e.target.value)}
-                    value={variantColor}
-                  />
-                  {/* <Button
+              <div
+                style={{ borderRadius: "0px" }}
+                className={classes.divContainerForItemSize}
+              >
+                <TextField
+                  type="text"
+                  label="size"
+                  size="small"
+                  className={classes.input}
+                  variant="outlined"
+                  onChange={(e) => setSizeInput(e.target.value)}
+                  value={sizeInputForTag}
+                />
+                <br />
+                <TextField
+                  type="number"
+                  label="quantity"
+                  size="small"
+                  className={classes.input}
+                  variant="outlined"
+                  onChange={(e) => setVariantQuantity(Number(e.target.value))}
+                  value={variantQuantity}
+                />
+                <TextField
+                  type="text"
+                  label="color"
+                  size="small"
+                  className={classes.input}
+                  variant="outlined"
+                  onChange={(e) => setVariantColor(e.target.value)}
+                  value={variantColor}
+                />
+                {/* <Button
                     onClick={() => {
                       addSizeVariant();
                       setVariantColor("");
@@ -351,71 +363,76 @@ export default function AddItem() {
                   >
                     add variant
                   </Button> */}
-                  <br />
-                  {variant.map((type) => (
-                    <div className={classes.variantBox} key={type.color}>
-                      <span>
-                        {type.color} | {type.quantity}
-                      </span>
-                    </div>
-                  ))}
+                <br />
+                {variant.map((type) => (
+                  <div className={classes.variantBox} key={type.color}>
+                    <span>
+                      {type.color} | {type.quantity}
+                    </span>
+                  </div>
+                ))}
 
-                  <br />
-                  <Button onClick={addProductVariation} variant="contained">
-                    Add Product Size
-                  </Button>
-                </div>
-              </Paper>
-              <Paper
-                style={{
-                  padding: "0.5rem",
-                  marginBottom: "0.5rem",
-                  textAlign: "left",
-                }}
-              >
-                <Typography>Product Tags</Typography>
-                {/* <CreatableSelect
+                <br />
+                <Button onClick={addProductVariation} variant="contained">
+                  Add Product Size
+                </Button>
+              </div>
+            </Paper>
+            <Paper
+              style={{
+                padding: "0.5rem",
+                marginBottom: "0.5rem",
+                textAlign: "left",
+              }}
+            >
+              <Typography>Product Tags</Typography>
+              {/* <CreatableSelect
                   isClearable
                   onChange={(e) => setTagInput(e.target.value)}
                   options={tags}
                 /> */}
-                <TextField
-                  type="text"
-                  label="tags"
-                  variant="outlined"
-                  size="small"
-                  onKeyDown={(e) => {
-                    if (e.keyCode === 13) {
-                      pushToTagArray();
-                    }
-                  }}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  value={tagInput}
-                  // onEnter={pushToTagArray}
-                />
-                {/* <Button onClick={pushToTagArray}>
+              <TextField
+                type="text"
+                label="tags"
+                variant="outlined"
+                size="small"
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    pushToTagArray();
+                  }
+                }}
+                onChange={(e) => setTagInput(e.target.value)}
+                value={tagInput}
+              />
+              {/* <Button onClick={pushToTagArray}>
                   <Typography>Add</Typography>
                 </Button> */}
-                <div style={{ display: "inline" }}>
-                  {tags.map((tag) => (
-                    <div
-                      style={{
-                        margin: "5px",
-                        padding: "5px",
-                        borderRadius: "2px",
-                        backgroundColor: "lightblue",
-                        display: "inline",
-                        height: "36px",
-                        fontSize: "16px",
-                      }}
-                    >
-                      <span>{tag}</span>
-                    </div>
-                  ))}
-                </div>
-              </Paper>
-              {/* for adding vendor */}
-              {/* <Typography>Vendor</Typography>
+              <div style={{ display: "inline" }}>
+                {tags.map((tag) => (
+                  <div
+                    style={{
+                      margin: "5px",
+                      padding: "5px",
+                      borderRadius: "2px",
+                      backgroundColor: "lightblue",
+                      display: "inline-block",
+                      height: "36px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    <span>{tag} </span>
+                    <span onClick={() => deleteFromTagArray(tag)}>
+                      <BackspaceIcon
+                        fontSize="small"
+                        style={{ marginBottom: "-3px" }}
+                      />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </Paper>
+            {/* for adding vendor */}
+            {/* <Typography>Vendor</Typography>
               <TextField
                 className={classes.marginBottom}
                 style={{ width: "30%" }}
@@ -433,7 +450,7 @@ export default function AddItem() {
                 ))}
               </TextField> */}
 
-              {/* <InputLabel>Amount</InputLabel>
+            {/* <InputLabel>Amount</InputLabel>
               <Input
                 className={classes.marginBottom}
                 type="number"
@@ -444,19 +461,24 @@ export default function AddItem() {
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
               ></Input> */}
-              <br />
-              <Typography className={classes.text}>
-                Quantity: {totalQuantity}
-              </Typography>
-              <Button
-                color="primary"
-                variant="outlined"
-                type="submit"
-                className={classes.newItemBtn}
-              >
-                Submit
+            <br />
+            <Typography className={classes.text}>
+              Quantity: {totalQuantity}
+            </Typography>
+            <Button
+              onClick={submitForm}
+              variant="outlined"
+              type="submit"
+              className={classes.newItemBtn}
+            >
+              Submit
+            </Button>
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <Button color="secondary" variant="filled">
+                Cancel
               </Button>
-            </form>
+            </Link>
+            {/* </form> */}
           </Container>
         </div>
       ) : (

@@ -90,8 +90,7 @@ export default function StoreManager({ children }) {
     //weak validation before hitting server. returns alert to user
     for (const x of arrayToCheck) {
       if (x === null || x === "" || x === undefined || x.length === 0) {
-        // return alert.show("Please make sure all fields have been completed.. ");
-        return console.log(JSON.stringify(x));
+        return alert.show("Please make sure all fields have been completed.. ");
       }
     }
 

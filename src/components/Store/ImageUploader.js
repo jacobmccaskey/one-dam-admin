@@ -10,5 +10,5 @@ export default function ImageUploader(props) {
     console.log(images);
   };
 
-  return <DropzoneArea onChange={(e) => upload(e)} />;
+  return <DropzoneArea filesLimit={6} onChange={(e) => upload(e)} />;
 }
